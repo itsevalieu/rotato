@@ -9,6 +9,7 @@ import AmbientBackground from "@/components/layout/AmbientBackground";
 import GardenBoard from "@/components/garden/GardenBoard";
 import SearchFilter from "@/components/garden/SearchFilter";
 import ProjectForm from "@/components/garden/ProjectForm";
+import ArchivedSection from "@/components/garden/ArchivedSection";
 import Button from "@/components/ui/Button";
 import type { SectionId } from "@/lib/types";
 
@@ -59,6 +60,7 @@ function GardenContent() {
         </div>
 
         <GardenBoard searchQuery={searchQuery} tagFilter={tagFilter} />
+        <ArchivedSection />
       </main>
 
       <ProjectForm

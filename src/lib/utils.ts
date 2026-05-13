@@ -33,7 +33,8 @@ export function filterProjects(
         p.title.toLowerCase().includes(q) ||
         p.description.toLowerCase().includes(q) ||
         p.tags.some((t) => t.toLowerCase().includes(q)) ||
-        p.nextTinyStep?.toLowerCase().includes(q)
+        p.nextTinyStep?.toLowerCase().includes(q) ||
+        p.journalEntries?.some((e) => e.text.toLowerCase().includes(q))
     );
   }
 
@@ -57,6 +58,17 @@ export function getAllTags(projects: Project[]): string[] {
   const tagSet = new Set<string>();
   projects.forEach((p) => p.tags.forEach((t) => tagSet.add(t)));
   return Array.from(tagSet).sort();
+}
+
+export function getDormancyStatus(
+  lastTouchedAt: string
+): { label: string; level: "warn" | "alert" } | null {
+  const days = Math.floor(
+    (Date.now() - new Date(lastTouchedAt).getTime()) / 86400000
+  );
+  if (days >= 30) return { label: `${days}d idle`, level: "alert" };
+  if (days >= 7) return { label: `${days}d idle`, level: "warn" };
+  return null;
 }
 
 export function getSectionColor(sectionId: SectionId): string {

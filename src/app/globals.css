@@ -32,6 +32,22 @@
   --foreground: #4A3F35;
 }
 
+/* Dark mode overrides */
+html.dark {
+  --background: #1E1813;
+  --foreground: #E8DDD5;
+  --color-cream: #1E1813;
+  --color-cream-dark: #261E18;
+  --color-parchment: #2C2219;
+  --color-soft-brown: #E0D4CC;
+  --color-soft-brown-light: #C4B8B0;
+  --color-warm-gray: #8A7C70;
+  --color-warm-gray-light: #5C5048;
+  --shadow-warm-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --shadow-warm: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --shadow-warm-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+
 *:focus-visible {
   outline: 2px solid var(--color-terracotta-light);
   outline-offset: 2px;

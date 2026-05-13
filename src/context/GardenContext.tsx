@@ -8,16 +8,34 @@ import {
   useCallback,
   type ReactNode,
 } from "react";
-import type { GardenState, GardenAction, Project, SectionId } from "@/lib/types";
+import type { GardenState, GardenAction, Project, SectionId, JournalEntry, ChecklistItem } from "@/lib/types";
 import { initialState } from "@/lib/seed-data";
 import { loadState, saveState } from "@/lib/storage";
 import { shuffleArray } from "@/lib/utils";
 import { nanoid } from "nanoid";
 
+function migrateProject(p: Project): Project {
+  let updated = p;
+  if (!updated.journalEntries || updated.journalEntries.length === 0) {
+    const entries: JournalEntry[] = updated.journalEntry
+      ? [{ id: nanoid(), text: updated.journalEntry, createdAt: updated.lastTouchedAt }]
+      : [];
+    updated = { ...updated, journalEntries: entries };
+  }
+  if (!updated.checklistItems) {
+    updated = { ...updated, checklistItems: [] };
+  }
+  return updated;
+}
+
 function gardenReducer(state: GardenState, action: GardenAction): GardenState {
   switch (action.type) {
     case "HYDRATE":
-      return { ...action.state, hydrated: true };
+      return {
+        ...action.state,
+        projects: action.state.projects.map(migrateProject),
+        hydrated: true,
+      };
 
     case "ADD_PROJECT":
       return {
@@ -105,6 +123,68 @@ function gardenReducer(state: GardenState, action: GardenAction): GardenState {
       };
     }
 
+    case "ADD_JOURNAL_ENTRY": {
+      const now = new Date().toISOString();
+      return {
+        ...state,
+        projects: state.projects.map((p) =>
+          p.id !== action.id
+            ? p
+            : {
+                ...p,
+                journalEntries: [action.entry, ...p.journalEntries],
+                lastTouchedAt: now,
+              }
+        ),
+      };
+    }
+
+    case "SET_FOCUS":
+      return { ...state, focusProjectId: action.id };
+
+    case "CLEAR_FOCUS":
+      return { ...state, focusProjectId: undefined };
+
+    case "ADD_CHECKLIST_ITEM":
+      return {
+        ...state,
+        projects: state.projects.map((p) =>
+          p.id !== action.projectId
+            ? p
+            : { ...p, checklistItems: [...(p.checklistItems ?? []), action.item] }
+        ),
+      };
+
+    case "TOGGLE_CHECKLIST_ITEM":
+      return {
+        ...state,
+        projects: state.projects.map((p) =>
+          p.id !== action.projectId
+            ? p
+            : {
+                ...p,
+                checklistItems: (p.checklistItems ?? []).map((item) =>
+                  item.id === action.itemId ? { ...item, done: !item.done } : item
+                ),
+              }
+        ),
+      };
+
+    case "DELETE_CHECKLIST_ITEM":
+      return {
+        ...state,
+        projects: state.projects.map((p) =>
+          p.id !== action.projectId
+            ? p
+            : {
+                ...p,
+                checklistItems: (p.checklistItems ?? []).filter(
+                  (item) => item.id !== action.itemId
+                ),
+              }
+        ),
+      };
+
     case "REORDER_PROJECTS": {
       const reorderedInSection = action.projectIds
         .map((id) => state.projects.find((p) => p.id === id))
@@ -163,6 +243,8 @@ export function GardenProvider({ children }: { children: ReactNode }) {
         createdAt: now,
         lastTouchedAt: now,
         timeline: [],
+        journalEntries: [],
+        checklistItems: [],
         archived: false,
       };
       dispatch({ type: "ADD_PROJECT", project });

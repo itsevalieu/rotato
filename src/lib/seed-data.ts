@@ -1,6 +1,14 @@
-import type { Project, GardenState } from "./types";
+import type { Project, GardenState, JournalEntry, ChecklistItem } from "./types";
+import { nanoid } from "nanoid";
 
-const now = new Date().toISOString();
+function makeEntry(text: string, daysAgoCount: number): JournalEntry {
+  return { id: nanoid(), text, createdAt: new Date(Date.now() - daysAgoCount * 86400000).toISOString() };
+}
+
+function makeCheck(text: string, done = false): ChecklistItem {
+  return { id: nanoid(), text, done };
+}
+
 const daysAgo = (d: number) =>
   new Date(Date.now() - d * 86400000).toISOString();
 
@@ -18,8 +26,15 @@ const seedProjects: Project[] = [
     color: "#C67B5C",
     icon: "Palette",
     nextTinyStep: "Paint the succulent on the windowsill",
-    journalEntry:
-      "Finally figured out how to get that soft edge on wet paper. The trick is patience.",
+    journalEntries: [
+      makeEntry("Finally figured out how to get that soft edge on wet paper. The trick is patience.", 1),
+      makeEntry("Started with leaves today. Botanical shapes are harder than they look.", 8),
+    ],
+    checklistItems: [
+      makeCheck("Buy cold-press paper", true),
+      makeCheck("Practice wet-on-wet technique"),
+      makeCheck("Fill one full sketchbook page"),
+    ],
     timeline: [],
     archived: false,
   },
@@ -36,6 +51,12 @@ const seedProjects: Project[] = [
     color: "#7E9BB0",
     icon: "Music",
     nextTinyStep: "Record the creek behind the house at dawn",
+    journalEntries: [],
+    checklistItems: [
+      makeCheck("Record creek at dawn"),
+      makeCheck("Layer synth pad on track 1", true),
+      makeCheck("Master and export"),
+    ],
     timeline: [],
     archived: false,
   },
@@ -52,8 +73,10 @@ const seedProjects: Project[] = [
     color: "#C9A96E",
     icon: "BookOpen",
     nextTinyStep: "Outline the story about the clockmaker",
-    journalEntry:
-      "Taking a break from this one. The characters need time to develop in my mind.",
+    journalEntries: [
+      makeEntry("Taking a break from this one. The characters need time to develop in my mind.", 30),
+    ],
+    checklistItems: [],
     timeline: [
       {
         from: "currently-playing",
@@ -75,6 +98,8 @@ const seedProjects: Project[] = [
     color: "#A8998A",
     icon: "Gem",
     nextTinyStep: "Try the new speckled glaze on a test tile",
+    journalEntries: [],
+    checklistItems: [],
     timeline: [
       {
         from: "currently-playing",
@@ -93,6 +118,8 @@ const seedProjects: Project[] = [
     lastTouchedAt: daysAgo(20),
     createdAt: daysAgo(20),
     icon: "Pen",
+    journalEntries: [],
+    checklistItems: [],
     timeline: [],
     archived: false,
   },
@@ -106,6 +133,8 @@ const seedProjects: Project[] = [
     lastTouchedAt: daysAgo(10),
     createdAt: daysAgo(10),
     icon: "Film",
+    journalEntries: [],
+    checklistItems: [],
     timeline: [],
     archived: false,
   },
@@ -120,6 +149,8 @@ const seedProjects: Project[] = [
     createdAt: daysAgo(5),
     color: "#8B9E82",
     icon: "Leaf",
+    journalEntries: [],
+    checklistItems: [],
     timeline: [],
     archived: false,
   },
@@ -134,8 +165,14 @@ const seedProjects: Project[] = [
     createdAt: daysAgo(230),
     color: "#C9A96E",
     icon: "Feather",
-    journalEntry:
-      "This was the first time I finished a month-long challenge. So proud of how the style evolved.",
+    journalEntries: [
+      makeEntry("This was the first time I finished a month-long challenge. So proud of how the style evolved.", 200),
+      makeEntry("Day 15 — the prompt 'shelter' unlocked something. Drew a snail carrying a tiny house.", 215),
+    ],
+    checklistItems: [
+      makeCheck("Complete all 31 days", true),
+      makeCheck("Scan and post favourite pieces", true),
+    ],
     timeline: [
       {
         from: "currently-playing",

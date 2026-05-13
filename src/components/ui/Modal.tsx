@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useRef, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
+import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface ModalProps {
@@ -12,6 +13,11 @@ interface ModalProps {
 
 export default function Modal({ open, onClose, title, children }: ModalProps) {
   const dialogRef = useRef<HTMLDivElement>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     if (!open) return;
@@ -54,10 +60,10 @@ export default function Modal({ open, onClose, title, children }: ModalProps) {
     };
   }, [open, onClose]);
 
-  return (
+  const modalContent = (
     <AnimatePresence>
       {open && (
-        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center">
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center pb-[env(safe-area-inset-bottom)] sm:pb-0 p-4 sm:p-0">
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -77,7 +83,7 @@ export default function Modal({ open, onClose, title, children }: ModalProps) {
             exit={{ opacity: 0, y: 40, scale: 0.97 }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
             className="relative z-10 w-full max-w-lg max-h-[85vh] overflow-y-auto
-              bg-cream rounded-t-2xl sm:rounded-2xl shadow-warm-lg p-6
+              bg-cream rounded-2xl shadow-warm-lg p-6
               border border-warm-gray-light/30"
           >
             {title && (
@@ -91,4 +97,7 @@ export default function Modal({ open, onClose, title, children }: ModalProps) {
       )}
     </AnimatePresence>
   );
+
+  if (!mounted) return null;
+  return createPortal(modalContent, document.body);
 }

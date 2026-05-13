@@ -94,3 +94,10 @@ export const ICON_OPTIONS = [
 ] as const;
 
 export const STORAGE_KEY = "rotato-garden-state";
+
+export const SECTION_COLORS: Record<string, string> = {
+  "currently-playing": "#C67B5C",
+  resting: "#7E9BB0",
+  seeds: "#8B9E82",
+  "finished-worlds": "#C9A96E",
+};

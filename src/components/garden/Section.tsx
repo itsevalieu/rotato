@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Shuffle } from "lucide-react";
 import * as LucideIcons from "lucide-react";
 import type { SectionId } from "@/lib/types";
 import { SECTION_META } from "@/lib/constants";
@@ -12,6 +12,7 @@ interface SectionProps {
   count: number;
   collapsed: boolean;
   onToggleCollapse: () => void;
+  onShuffle?: () => void;
   isOver?: boolean;
   children: ReactNode;
   droppableProps?: Record<string, unknown>;
@@ -24,6 +25,7 @@ export default function Section({
   count,
   collapsed,
   onToggleCollapse,
+  onShuffle,
   isOver,
   children,
   droppableProps,
@@ -57,32 +59,49 @@ export default function Section({
       aria-label={`${meta.label} projects`}
       {...droppableProps}
     >
-      <button
-        onClick={onToggleCollapse}
-        className="w-full flex items-center gap-3 p-4 cursor-pointer group"
-        aria-expanded={!collapsed}
-      >
-        <div
-          className={`p-2 rounded-xl ${colorMap[meta.color]}`}
+      <div className="flex items-center gap-3 p-4 group">
+        <button
+          onClick={onToggleCollapse}
+          className="flex items-center gap-3 flex-1 min-w-0 cursor-pointer text-left"
+          aria-expanded={!collapsed}
         >
-          {Icon && <Icon size={20} />}
-        </div>
-        <div className="flex-1 text-left">
-          <h2 className="font-accent text-xl text-soft-brown">
-            {meta.label}
-          </h2>
-          <p className="text-xs text-warm-gray">{meta.description}</p>
-        </div>
-        <span className="text-xs text-warm-gray bg-parchment px-2 py-0.5 rounded-full">
+          <div className={`p-2 rounded-xl shrink-0 ${colorMap[meta.color]}`}>
+            {Icon && <Icon size={20} />}
+          </div>
+          <div className="flex-1 min-w-0 text-left">
+            <h2 className="font-accent text-xl text-soft-brown">
+              {meta.label}
+            </h2>
+            <p className="text-xs text-warm-gray">{meta.description}</p>
+          </div>
+        </button>
+        <span className="text-xs text-warm-gray bg-parchment px-2 py-0.5 rounded-full shrink-0">
           {count}
         </span>
-        <motion.div
-          animate={{ rotate: collapsed ? -90 : 0 }}
-          transition={{ duration: 0.2 }}
+        {onShuffle && count > 1 && (
+          <button
+            onClick={onShuffle}
+            className="p-1.5 rounded-lg text-warm-gray hover:text-soft-brown hover:bg-parchment transition-colors shrink-0"
+            aria-label="Shuffle section order"
+            title="Shuffle"
+          >
+            <Shuffle size={14} />
+          </button>
+        )}
+        <button
+          onClick={onToggleCollapse}
+          className="shrink-0"
+          aria-label={collapsed ? "Expand section" : "Collapse section"}
+          tabIndex={-1}
         >
-          <ChevronDown size={18} className="text-warm-gray group-hover:text-soft-brown transition-colors" />
-        </motion.div>
-      </button>
+          <motion.div
+            animate={{ rotate: collapsed ? -90 : 0 }}
+            transition={{ duration: 0.2 }}
+          >
+            <ChevronDown size={18} className="text-warm-gray group-hover:text-soft-brown transition-colors" />
+          </motion.div>
+        </button>
+      </div>
 
       <AnimatePresence initial={false}>
         {!collapsed && (

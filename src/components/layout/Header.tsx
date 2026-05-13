@@ -1,13 +1,16 @@
 "use client";
 
 import Link from "next/link";
-import { Flower2, Volume2, VolumeX, LayoutGrid, List } from "lucide-react";
+import { Flower2, Volume2, VolumeX, LayoutGrid, List, Moon, Sun } from "lucide-react";
 import { useGarden } from "@/context/GardenContext";
+import { useDarkMode } from "@/hooks/useDarkMode";
 import CreativeWeather from "@/components/garden/CreativeWeather";
 import SurpriseMe from "@/components/garden/SurpriseMe";
+import ExportMenu from "@/components/garden/ExportMenu";
 
 export default function Header() {
   const { state, dispatch } = useGarden();
+  const { dark, toggle: toggleDark, mounted } = useDarkMode();
 
   return (
     <header className="sticky top-0 z-40 bg-cream/80 backdrop-blur-md border-b border-warm-gray-light/20">
@@ -24,6 +27,8 @@ export default function Header() {
         <CreativeWeather />
 
         <SurpriseMe />
+
+        <ExportMenu />
 
         <button
           onClick={() =>
@@ -57,6 +62,18 @@ export default function Header() {
             <VolumeX size={16} />
           )}
         </button>
+
+        {mounted && (
+          <button
+            onClick={toggleDark}
+            className="p-2 rounded-xl bg-white/60 border border-warm-gray-light/30
+              text-warm-gray hover:text-soft-brown hover:bg-parchment transition-colors"
+            aria-label={dark ? "Switch to light mode" : "Switch to dark mode"}
+            title={dark ? "Light mode" : "Dark mode"}
+          >
+            {dark ? <Sun size={16} /> : <Moon size={16} />}
+          </button>
+        )}
       </div>
     </header>
   );

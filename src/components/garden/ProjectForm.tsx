@@ -32,7 +32,6 @@ export default function ProjectForm({
   const [inspirationText, setInspirationText] = useState("");
   const [tags, setTags] = useState("");
   const [nextTinyStep, setNextTinyStep] = useState("");
-  const [journalEntry, setJournalEntry] = useState("");
   const [color, setColor] = useState<string | undefined>();
   const [icon, setIcon] = useState<string | undefined>();
   const [section, setSection] = useState<SectionId>(defaultSection);
@@ -44,7 +43,6 @@ export default function ProjectForm({
       setInspirationText(project.inspirationText || "");
       setTags(project.tags.join(", "));
       setNextTinyStep(project.nextTinyStep || "");
-      setJournalEntry(project.journalEntry || "");
       setColor(project.color);
       setIcon(project.icon);
       setSection(project.section);
@@ -54,7 +52,6 @@ export default function ProjectForm({
       setInspirationText("");
       setTags("");
       setNextTinyStep("");
-      setJournalEntry("");
       setColor(undefined);
       setIcon(undefined);
       setSection(defaultSection);
@@ -80,7 +77,6 @@ export default function ProjectForm({
           inspirationText: inspirationText.trim() || undefined,
           tags: parsedTags,
           nextTinyStep: nextTinyStep.trim() || undefined,
-          journalEntry: journalEntry.trim() || undefined,
           color,
           icon,
           section,
@@ -93,7 +89,6 @@ export default function ProjectForm({
         inspirationText: inspirationText.trim() || undefined,
         tags: parsedTags,
         nextTinyStep: nextTinyStep.trim() || undefined,
-        journalEntry: journalEntry.trim() || undefined,
         color,
         icon,
         section,
@@ -152,15 +147,6 @@ export default function ProjectForm({
           value={nextTinyStep}
           onChange={(e) => setNextTinyStep(e.target.value)}
           placeholder="The smallest possible next action..."
-        />
-
-        <Textarea
-          id="journal"
-          label="Journal / Reflection"
-          value={journalEntry}
-          onChange={(e) => setJournalEntry(e.target.value)}
-          placeholder="How are you feeling about this project?"
-          rows={3}
         />
 
         <div>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import {
   DndContext,
   closestCenter,
@@ -18,6 +18,7 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
   useSortable,
+  arrayMove,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { useDroppable } from "@dnd-kit/core";
@@ -28,6 +29,7 @@ import type { Project, SectionId } from "@/lib/types";
 import Section from "./Section";
 import ProjectCard from "./ProjectCard";
 import SeedCard from "./SeedCard";
+import GalleryCard from "./GalleryCard";
 import ProjectForm from "./ProjectForm";
 
 interface SortableProjectProps {
@@ -65,7 +67,13 @@ function SortableProject({
 
   if (project.section === "seeds") {
     return (
-      <div ref={setNodeRef} style={style}>
+      <motion.div
+        ref={setNodeRef}
+        style={style}
+        layout="position"
+        exit={{ opacity: 0, scale: 0.95 }}
+        transition={{ type: "spring", stiffness: 300, damping: 25 }}
+      >
         <SeedCard
           project={project}
           onEdit={onEdit}
@@ -74,12 +82,18 @@ function SortableProject({
           isDragging={isDragging}
           dragHandleProps={dragHandleProps}
         />
-      </div>
+      </motion.div>
     );
   }
 
   return (
-    <div ref={setNodeRef} style={style}>
+    <motion.div
+      ref={setNodeRef}
+      style={style}
+      layout="position"
+      exit={{ opacity: 0, scale: 0.95 }}
+      transition={{ type: "spring", stiffness: 300, damping: 25 }}
+    >
       <ProjectCard
         project={project}
         onEdit={onEdit}
@@ -89,7 +103,7 @@ function SortableProject({
         isDragging={isDragging}
         dragHandleProps={dragHandleProps}
       />
-    </div>
+    </motion.div>
   );
 }
 
@@ -103,6 +117,7 @@ function DroppableSection({
   count: number;
   collapsed: boolean;
   onToggleCollapse: () => void;
+  onShuffle: () => void;
 }) {
   const { isOver, setNodeRef } = useDroppable({ id: sectionId });
 
@@ -133,6 +148,8 @@ export default function GardenBoard({
   const [formOpen, setFormOpen] = useState(false);
   const [formSection, setFormSection] = useState<SectionId>("currently-playing");
   const [activeId, setActiveId] = useState<string | null>(null);
+
+  const isGallery = state.viewMode === "gallery";
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
@@ -169,16 +186,31 @@ export default function GardenBoard({
         return;
       }
 
-      // Dropped on another card — find its section and move there
+      // Dropped on another card — reorder within section or move to a different one
       const overProject = state.projects.find((p) => p.id === overId);
-      if (overProject) {
-        const project = state.projects.find((p) => p.id === projectId);
-        if (project && project.section !== overProject.section) {
+      const project = state.projects.find((p) => p.id === projectId);
+      if (overProject && project) {
+        if (project.section !== overProject.section) {
           dispatch({
             type: "MOVE_PROJECT",
             id: projectId,
             to: overProject.section,
           });
+        } else {
+          const sectionProjects = state.projects.filter(
+            (p) => p.section === project.section
+          );
+          const oldIndex = sectionProjects.findIndex((p) => p.id === projectId);
+          const newIndex = sectionProjects.findIndex((p) => p.id === overId);
+          if (oldIndex !== newIndex) {
+            dispatch({
+              type: "REORDER_PROJECTS",
+              sectionId: project.section,
+              projectIds: arrayMove(sectionProjects, oldIndex, newIndex).map(
+                (p) => p.id
+              ),
+            });
+          }
         }
       }
     },
@@ -227,6 +259,42 @@ export default function GardenBoard({
     ? state.projects.find((p) => p.id === activeId)
     : null;
 
+  if (isGallery) {
+    const allVisible = filtered.filter((p) => !p.archived);
+    const sorted = [...allVisible].sort(
+      (a, b) => new Date(b.lastTouchedAt).getTime() - new Date(a.lastTouchedAt).getTime()
+    );
+
+    return (
+      <>
+        <AnimatePresence mode="popLayout">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            {sorted.map((project, i) => (
+              <GalleryCard
+                key={project.id}
+                project={project}
+                onEdit={handleEdit}
+                index={i}
+              />
+            ))}
+            {sorted.length === 0 && (
+              <p className="col-span-full text-center text-warm-gray italic font-accent text-lg py-12">
+                Nothing to show yet.
+              </p>
+            )}
+          </div>
+        </AnimatePresence>
+
+        <ProjectForm
+          open={formOpen}
+          onClose={handleCloseForm}
+          project={editingProject}
+          defaultSection={formSection}
+        />
+      </>
+    );
+  }
+
   return (
     <>
       <DndContext
@@ -256,6 +324,9 @@ export default function GardenBoard({
                       type: "TOGGLE_SECTION_COLLAPSE",
                       sectionId,
                     })
+                  }
+                  onShuffle={() =>
+                    dispatch({ type: "SHUFFLE_SECTION", sectionId })
                   }
                 >
                   <AnimatePresence mode="popLayout">
