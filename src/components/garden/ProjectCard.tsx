@@ -10,8 +10,10 @@ import Badge from "@/components/ui/Badge";
 import Card from "@/components/ui/Card";
 import ProjectTimeline from "./ProjectTimeline";
 import ProjectJournal from "./ProjectJournal";
+import ProjectChecklist from "./ProjectChecklist";
 import { useState, useRef, useEffect, useCallback } from "react";
 import { createPortal } from "react-dom";
+import { useGarden } from "@/context/GardenContext";
 
 interface ProjectCardProps {
   project: Project;
@@ -32,16 +34,21 @@ export default function ProjectCard({
   isDragging,
   dragHandleProps,
 }: ProjectCardProps) {
+  const { state, dispatch: gardenDispatch } = useGarden();
+  const isFocused = state.focusProjectId === project.id;
   const [menuOpen, setMenuOpen] = useState(false);
   const [menuPos, setMenuPos] = useState({ top: 0, right: 0 });
   const [showTimeline, setShowTimeline] = useState(false);
   const [showJournal, setShowJournal] = useState(false);
+  const [showChecklist, setShowChecklist] = useState(false);
   const menuTriggerRef = useRef<HTMLButtonElement>(null);
   const menuDropdownRef = useRef<HTMLDivElement>(null);
   const Icon = project.icon ? getIcon(project.icon) : null;
   const accentColor = project.color ?? SECTION_COLORS[project.section];
   const dormancy = getDormancyStatus(project.lastTouchedAt);
   const journalCount = (project.journalEntries ?? []).length;
+  const checklistItems = project.checklistItems ?? [];
+  const checklistDone = checklistItems.filter((i) => i.done).length;
 
   const openMenu = useCallback((e: React.MouseEvent) => {
     e.stopPropagation();
@@ -209,6 +216,40 @@ export default function ProjectCard({
                 <ProjectJournal project={project} />
               </div>
             )}
+
+            {/* Milestones toggle */}
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowChecklist(!showChecklist);
+              }}
+              className={`mt-2 flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-lg border transition-colors w-full
+                ${showChecklist
+                  ? "bg-parchment border-warm-gray-light/40 text-soft-brown"
+                  : "bg-white/40 border-warm-gray-light/20 text-warm-gray hover:text-soft-brown hover:bg-parchment hover:border-warm-gray-light/40"
+                }`}
+            >
+              <CheckSquare size={13} />
+              <span>Milestones</span>
+              {checklistItems.length > 0 && (
+                <span className="ml-auto bg-warm-gray/10 text-warm-gray rounded-full px-1.5 py-0.5 text-[10px] font-medium">
+                  {checklistDone}/{checklistItems.length}
+                </span>
+              )}
+              <ChevronDown
+                size={12}
+                className={`${checklistItems.length > 0 ? "" : "ml-auto"} transition-transform ${showChecklist ? "rotate-180" : ""}`}
+              />
+            </button>
+
+            {showChecklist && (
+              <div
+                onClick={(e) => e.stopPropagation()}
+                onKeyDown={(e) => e.stopPropagation()}
+              >
+                <ProjectChecklist project={project} />
+              </div>
+            )}
           </div>
 
           {/* Menu */}
@@ -246,6 +287,19 @@ export default function ProjectCard({
                   Move to {SECTION_META[s].label}
                 </button>
               ))}
+              <hr className="my-1 border-warm-gray-light/30" />
+              <button
+                onClick={() => {
+                  isFocused
+                    ? gardenDispatch({ type: "CLEAR_FOCUS" })
+                    : gardenDispatch({ type: "SET_FOCUS", id: project.id });
+                  setMenuOpen(false);
+                }}
+                className="w-full px-3 py-2 text-left text-sm text-soft-brown hover:bg-parchment flex items-center gap-2 transition-colors"
+              >
+                <Target size={14} />
+                {isFocused ? "Clear Focus" : "Set as Today's Focus"}
+              </button>
               <hr className="my-1 border-warm-gray-light/30" />
               <button
                 onClick={() => {

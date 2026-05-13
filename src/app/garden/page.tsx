@@ -10,6 +10,8 @@ import GardenBoard from "@/components/garden/GardenBoard";
 import SearchFilter from "@/components/garden/SearchFilter";
 import ProjectForm from "@/components/garden/ProjectForm";
 import ArchivedSection from "@/components/garden/ArchivedSection";
+import FocusBanner from "@/components/garden/FocusBanner";
+import ActivityHeatmap from "@/components/garden/ActivityHeatmap";
 import Button from "@/components/ui/Button";
 import type { SectionId } from "@/lib/types";
 
@@ -59,8 +61,10 @@ function GardenContent() {
           </div>
         </div>
 
+        <FocusBanner />
         <GardenBoard searchQuery={searchQuery} tagFilter={tagFilter} />
         <ArchivedSection />
+        <ActivityHeatmap />
       </main>
 
       <ProjectForm
