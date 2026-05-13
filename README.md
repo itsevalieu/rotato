@@ -1,36 +1,87 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Rotato
+
+A cozy, low-pressure creative project rotation app for hobbyists and multidisciplinary creatives.
+
+Creativity should feel like play, not productivity. Rotato helps you tend your creative projects like a garden — things can grow, rest, and bloom at their own pace.
+
+## Philosophy
+
+- **No deadlines.** Projects move at your pace.
+- **No streaks or metrics.** There's nothing to optimize.
+- **No guilt.** It's okay to put things down for months.
+- **No giant backlogs.** Just four gentle sections.
+- **Local-first.** Your data stays on your device.
+
+## Sections
+
+| Section | Purpose |
+|---------|---------|
+| **Currently Playing** | Projects you're actively excited about (1–5 recommended) |
+| **Resting** | Dormant projects — not abandoned, just sleeping |
+| **Seeds** | Tiny undeveloped ideas waiting to grow |
+| **Finished Worlds** | Completed or retired projects — celebrate them |
+
+## Features
+
+- Drag-and-drop cards between sections
+- Create, edit, and archive projects
+- "Surprise Me" button to resurface resting projects
+- Creative Weather mood indicator
+- Ambient mode with soft gradients
+- Search and filter by tags
+- Timeline tracking for project journeys
+- Gallery/board view toggle
+- Keyboard-accessible drag-and-drop
+- Responsive design
+- Reduced motion support
+
+## Tech Stack
+
+- [Next.js](https://nextjs.org/) 16 (App Router)
+- [React](https://react.dev/) 19
+- [TypeScript](https://www.typescriptlang.org/)
+- [Tailwind CSS](https://tailwindcss.com/) v4
+- [Framer Motion](https://www.framer.com/motion/)
+- [@dnd-kit](https://dndkit.com/) for drag-and-drop
+- [idb-keyval](https://github.com/nicedoc/idb-keyval) for IndexedDB persistence
+- [Lucide React](https://lucide.dev/) icons
 
 ## Getting Started
 
-First, run the development server:
-
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) to see the landing page, then navigate to `/garden` to start tending your projects.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+On first launch, the app is populated with example projects to demonstrate the UX.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Deployment
 
-## Learn More
+This app is ready to deploy on [Vercel](https://vercel.com). No environment variables or backend configuration needed — everything runs client-side with local storage.
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+npm run build
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Project Structure
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```
+src/
+├── app/              # Next.js App Router pages
+│   ├── page.tsx      # Landing page
+│   └── garden/       # Main app board
+├── components/
+│   ├── ui/           # Reusable design primitives
+│   ├── layout/       # Header, ambient background
+│   ├── garden/       # Domain components (board, cards, forms)
+│   └── landing/      # Landing page sections
+├── context/          # React Context + useReducer state
+├── hooks/            # Custom hooks
+└── lib/              # Types, constants, storage, utilities
+```
 
-## Deploy on Vercel
+## License
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+MIT

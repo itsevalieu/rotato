@@ -1,26 +1,110 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-cream: #FDF6EC;
+  --color-cream-dark: #F5EDDE;
+  --color-parchment: #F5EDDE;
+  --color-terracotta: #C67B5C;
+  --color-terracotta-light: #D4957A;
+  --color-terracotta-dark: #A8624A;
+  --color-sage: #8B9E82;
+  --color-sage-light: #A8B8A0;
+  --color-sage-dark: #6E8164;
+  --color-muted-gold: #C9A96E;
+  --color-muted-gold-light: #D9C08E;
+  --color-dusty-blue: #7E9BB0;
+  --color-dusty-blue-light: #9DB5C6;
+  --color-warm-gray: #A8998A;
+  --color-warm-gray-light: #C4B8AC;
+  --color-soft-brown: #6B5B4E;
+  --color-soft-brown-light: #8A7A6D;
+
+  --font-accent: "Caveat", cursive;
+  --font-body: "Inter", sans-serif;
+
+  --shadow-warm-sm: 0 1px 3px rgba(107, 91, 78, 0.08);
+  --shadow-warm: 0 4px 12px rgba(107, 91, 78, 0.1);
+  --shadow-warm-lg: 0 8px 24px rgba(107, 91, 78, 0.14);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+:root {
+  --background: #FDF6EC;
+  --foreground: #4A3F35;
+}
+
+*:focus-visible {
+  outline: 2px solid var(--color-terracotta-light);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+::selection {
+  background: var(--color-muted-gold-light);
+  color: var(--color-soft-brown);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-body);
+}
+
+/* Subtle paper texture overlay */
+.paper-texture {
+  position: relative;
+}
+.paper-texture::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0.03;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Ambient gradient animation */
+@keyframes ambientShift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+.ambient-bg {
+  background: linear-gradient(
+    135deg,
+    var(--color-cream) 0%,
+    var(--color-parchment) 25%,
+    var(--color-sage-light) 50%,
+    var(--color-dusty-blue-light) 75%,
+    var(--color-cream) 100%
+  );
+  background-size: 400% 400%;
+  animation: ambientShift 20s ease infinite;
+}
+
+/* Skip link for accessibility */
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: 16px;
+  z-index: 100;
+  padding: 8px 16px;
+  background: var(--color-terracotta);
+  color: white;
+  border-radius: 8px;
+  font-weight: 500;
+  transition: top 0.2s;
+}
+.skip-link:focus {
+  top: 16px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ambient-bg {
+    animation: none;
+  }
+  * {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
 }
