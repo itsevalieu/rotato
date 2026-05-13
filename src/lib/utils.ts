@@ -1,5 +1,5 @@
 import { formatDistanceToNow } from "date-fns";
-import type { Project, SectionId } from "./types";
+import type { Project, SectionId, ActivityEvent } from "./types";
 
 export function timeAgo(dateStr: string): string {
   return formatDistanceToNow(new Date(dateStr), { addSuffix: true });
@@ -69,6 +69,54 @@ export function getDormancyStatus(
   if (days >= 30) return { label: `${days}d idle`, level: "alert" };
   if (days >= 7) return { label: `${days}d idle`, level: "warn" };
   return null;
+}
+
+export function buildActivityFeed(projects: Project[]): ActivityEvent[] {
+  const events: ActivityEvent[] = [];
+
+  for (const project of projects) {
+    // Project created event
+    events.push({
+      id: `created-${project.id}`,
+      type: "created",
+      projectId: project.id,
+      projectTitle: project.title,
+      projectColor: project.color,
+      projectSection: project.section,
+      date: project.createdAt,
+    });
+
+    // Timeline moves
+    for (const entry of project.timeline ?? []) {
+      events.push({
+        id: `move-${project.id}-${entry.movedAt}`,
+        type: "move",
+        projectId: project.id,
+        projectTitle: project.title,
+        projectColor: project.color,
+        projectSection: project.section,
+        date: entry.movedAt,
+        from: entry.from as SectionId,
+        to: entry.to as SectionId,
+      });
+    }
+
+    // Journal entries
+    for (const entry of project.journalEntries ?? []) {
+      events.push({
+        id: `journal-${entry.id}`,
+        type: "journal",
+        projectId: project.id,
+        projectTitle: project.title,
+        projectColor: project.color,
+        projectSection: project.section,
+        date: entry.createdAt,
+        text: entry.text,
+      });
+    }
+  }
+
+  return events.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 }
 
 export function getSectionColor(sectionId: SectionId): string {

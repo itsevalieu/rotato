@@ -36,6 +36,7 @@ export default function FocusBanner() {
             <div className="flex items-center gap-2">
               {project.icon && (() => {
                 const Icon = getIcon(project.icon!);
+                if (!Icon) return null;
                 return (
                   <Icon
                     size={14}

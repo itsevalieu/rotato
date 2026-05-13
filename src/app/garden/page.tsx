@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Plus, Sprout } from "lucide-react";
 import { motion } from "framer-motion";
-import { GardenProvider } from "@/context/GardenContext";
+import { GardenProvider, useGarden } from "@/context/GardenContext";
 import Header from "@/components/layout/Header";
 import AmbientBackground from "@/components/layout/AmbientBackground";
 import GardenBoard from "@/components/garden/GardenBoard";
@@ -15,18 +15,28 @@ import ActivityHeatmap from "@/components/garden/ActivityHeatmap";
 import Button from "@/components/ui/Button";
 import type { SectionId } from "@/lib/types";
 
+const WIDE_MODES = new Set(["kanban", "three-panel"]);
+const FULL_MODES = new Set(["quadrant", "deck", "river", "three-panel"]);
+
 function GardenContent() {
+  const { state } = useGarden();
   const [searchQuery, setSearchQuery] = useState("");
   const [tagFilter, setTagFilter] = useState<string | undefined>();
   const [createOpen, setCreateOpen] = useState(false);
   const [createSection, setCreateSection] = useState<SectionId>("currently-playing");
+
+  const isWide = WIDE_MODES.has(state.viewMode);
+  const isFullBleed = FULL_MODES.has(state.viewMode);
+  const containerClass = isWide
+    ? "max-w-7xl mx-auto px-4 py-6"
+    : "max-w-4xl mx-auto px-4 py-6";
 
   return (
     <>
       <AmbientBackground />
       <Header />
 
-      <main id="main-content" className="max-w-4xl mx-auto px-4 py-6">
+      <main id="main-content" className={containerClass}>
         <div className="flex flex-col sm:flex-row gap-3 mb-6">
           <div className="flex-1">
             <SearchFilter
@@ -61,10 +71,10 @@ function GardenContent() {
           </div>
         </div>
 
-        <FocusBanner />
+        {!isFullBleed && <FocusBanner />}
         <GardenBoard searchQuery={searchQuery} tagFilter={tagFilter} />
-        <ArchivedSection />
-        <ActivityHeatmap />
+        {!isFullBleed && <ArchivedSection />}
+        {!isFullBleed && <ActivityHeatmap />}
       </main>
 
       <ProjectForm

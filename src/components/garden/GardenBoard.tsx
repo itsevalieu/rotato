@@ -31,6 +31,11 @@ import ProjectCard from "./ProjectCard";
 import SeedCard from "./SeedCard";
 import GalleryCard from "./GalleryCard";
 import ProjectForm from "./ProjectForm";
+import KanbanView from "./KanbanView";
+import QuadrantView from "./QuadrantView";
+import RiverView from "./RiverView";
+import DeckView from "./DeckView";
+import ThreePanelView from "./ThreePanelView";
 
 interface SortableProjectProps {
   project: Project;
@@ -149,7 +154,7 @@ export default function GardenBoard({
   const [formSection, setFormSection] = useState<SectionId>("currently-playing");
   const [activeId, setActiveId] = useState<string | null>(null);
 
-  const isGallery = state.viewMode === "gallery";
+  const viewMode = state.viewMode;
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
@@ -259,7 +264,27 @@ export default function GardenBoard({
     ? state.projects.find((p) => p.id === activeId)
     : null;
 
-  if (isGallery) {
+  if (viewMode === "kanban") {
+    return <KanbanView searchQuery={searchQuery} tagFilter={tagFilter} filtered={filtered} />;
+  }
+
+  if (viewMode === "quadrant") {
+    return <QuadrantView filtered={filtered} />;
+  }
+
+  if (viewMode === "river") {
+    return <RiverView filtered={filtered} />;
+  }
+
+  if (viewMode === "deck") {
+    return <DeckView filtered={filtered} />;
+  }
+
+  if (viewMode === "three-panel") {
+    return <ThreePanelView filtered={filtered} />;
+  }
+
+  if (viewMode === "gallery") {
     const allVisible = filtered.filter((p) => !p.archived);
     const sorted = [...allVisible].sort(
       (a, b) => new Date(b.lastTouchedAt).getTime() - new Date(a.lastTouchedAt).getTime()

@@ -50,7 +50,20 @@ export interface Project {
   archived: boolean;
 }
 
-export type ViewMode = "board" | "gallery";
+export type ViewMode = "board" | "gallery" | "kanban" | "quadrant" | "river" | "deck" | "three-panel";
+
+export interface ActivityEvent {
+  id: string;
+  type: "journal" | "move" | "created";
+  projectId: string;
+  projectTitle: string;
+  projectColor?: string;
+  projectSection: SectionId;
+  date: string; // ISO
+  text?: string;
+  from?: SectionId;
+  to?: SectionId;
+}
 
 export interface GardenState {
   projects: Project[];

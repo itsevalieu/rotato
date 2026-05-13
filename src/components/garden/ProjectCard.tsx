@@ -183,70 +183,47 @@ export default function ProjectCard({
 
             {showTimeline && <ProjectTimeline timeline={project.timeline} />}
 
-            {/* Captain's Log toggle */}
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                setShowJournal(!showJournal);
-              }}
-              className={`mt-2 flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-lg border transition-colors w-full
-                ${showJournal
-                  ? "bg-parchment border-warm-gray-light/40 text-soft-brown"
-                  : "bg-white/40 border-warm-gray-light/20 text-warm-gray hover:text-soft-brown hover:bg-parchment hover:border-warm-gray-light/40"
-                }`}
-            >
-              <BookOpen size={13} />
-              <span>Captain&apos;s Log</span>
-              {journalCount > 0 && (
-                <span className="ml-auto bg-warm-gray/10 text-warm-gray rounded-full px-1.5 py-0.5 text-[10px] font-medium">
-                  {journalCount}
-                </span>
-              )}
-              <ChevronDown
-                size={12}
-                className={`ml-auto transition-transform ${showJournal ? "rotate-180" : ""} ${journalCount > 0 ? "" : "ml-auto"}`}
-              />
-            </button>
+            {/* Captain's Log + Milestones — compact pill row */}
+            <div className="flex gap-2 mt-2">
+              <button
+                onClick={(e) => { e.stopPropagation(); setShowJournal(!showJournal); }}
+                className={`flex items-center gap-1 text-[11px] px-2 py-1 rounded-full border transition-colors
+                  ${showJournal
+                    ? "bg-parchment border-warm-gray-light/40 text-soft-brown"
+                    : "bg-white/40 border-warm-gray-light/20 text-warm-gray hover:text-soft-brown hover:bg-parchment"
+                  }`}
+              >
+                <BookOpen size={11} />
+                <span>Log</span>
+                {journalCount > 0 && <span className="text-[10px] opacity-70">{journalCount}</span>}
+                <ChevronDown size={10} className={`transition-transform ${showJournal ? "rotate-180" : ""}`} />
+              </button>
+
+              <button
+                onClick={(e) => { e.stopPropagation(); setShowChecklist(!showChecklist); }}
+                className={`flex items-center gap-1 text-[11px] px-2 py-1 rounded-full border transition-colors
+                  ${showChecklist
+                    ? "bg-parchment border-warm-gray-light/40 text-soft-brown"
+                    : "bg-white/40 border-warm-gray-light/20 text-warm-gray hover:text-soft-brown hover:bg-parchment"
+                  }`}
+              >
+                <CheckSquare size={11} />
+                <span>Milestones</span>
+                {checklistItems.length > 0 && (
+                  <span className="text-[10px] opacity-70">{checklistDone}/{checklistItems.length}</span>
+                )}
+                <ChevronDown size={10} className={`transition-transform ${showChecklist ? "rotate-180" : ""}`} />
+              </button>
+            </div>
 
             {showJournal && (
-              <div
-                onClick={(e) => e.stopPropagation()}
-                onKeyDown={(e) => e.stopPropagation()}
-              >
+              <div onClick={(e) => e.stopPropagation()} onKeyDown={(e) => e.stopPropagation()}>
                 <ProjectJournal project={project} />
               </div>
             )}
 
-            {/* Milestones toggle */}
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                setShowChecklist(!showChecklist);
-              }}
-              className={`mt-2 flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-lg border transition-colors w-full
-                ${showChecklist
-                  ? "bg-parchment border-warm-gray-light/40 text-soft-brown"
-                  : "bg-white/40 border-warm-gray-light/20 text-warm-gray hover:text-soft-brown hover:bg-parchment hover:border-warm-gray-light/40"
-                }`}
-            >
-              <CheckSquare size={13} />
-              <span>Milestones</span>
-              {checklistItems.length > 0 && (
-                <span className="ml-auto bg-warm-gray/10 text-warm-gray rounded-full px-1.5 py-0.5 text-[10px] font-medium">
-                  {checklistDone}/{checklistItems.length}
-                </span>
-              )}
-              <ChevronDown
-                size={12}
-                className={`${checklistItems.length > 0 ? "" : "ml-auto"} transition-transform ${showChecklist ? "rotate-180" : ""}`}
-              />
-            </button>
-
             {showChecklist && (
-              <div
-                onClick={(e) => e.stopPropagation()}
-                onKeyDown={(e) => e.stopPropagation()}
-              >
+              <div onClick={(e) => e.stopPropagation()} onKeyDown={(e) => e.stopPropagation()}>
                 <ProjectChecklist project={project} />
               </div>
             )}

@@ -92,6 +92,8 @@ export default function ProjectForm({
         color,
         icon,
         section,
+        journalEntries: [],
+        checklistItems: [],
       });
     }
 
