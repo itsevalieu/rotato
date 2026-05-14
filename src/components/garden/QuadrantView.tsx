@@ -88,7 +88,7 @@ function QuadrantCell({
 
   return (
     <div
-      className={`flex flex-col rounded-2xl border-2 ${borderColorMap[meta.color]} bg-white/30 overflow-hidden`}
+      className={`flex flex-col rounded-2xl border-2 ${borderColorMap[meta.color]} bg-white/30 dark:bg-white/[0.04] overflow-hidden`}
     >
       <div
         className="flex items-center gap-2 px-3 py-2 border-b"
@@ -98,7 +98,7 @@ function QuadrantCell({
         <h3 className={`font-accent text-sm ${textColorMap[meta.color]} truncate flex-1`}>{meta.label}</h3>
         <span className="text-[10px] text-warm-gray bg-parchment px-1.5 py-0.5 rounded-full">{projects.length}</span>
       </div>
-      <div className="flex-1 overflow-y-auto p-2 space-y-1.5 min-h-[80px]">
+      <div className="flex-1 overflow-y-auto p-2 space-y-1.5 min-h-[120px] sm:min-h-[80px]">
         {projects.map((p) => (
           <QuadrantCard key={p.id} project={p} onEdit={onEdit} />
         ))}
@@ -126,7 +126,7 @@ export default function QuadrantView({ filtered }: QuadrantViewProps) {
 
   return (
     <>
-      <div className="grid grid-cols-2 gap-3 h-[calc(100vh-10rem)]">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:h-[calc(100vh-10rem)]">
         {SECTION_ORDER.map((sectionId) => (
           <QuadrantCell
             key={sectionId}

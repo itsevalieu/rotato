@@ -6,6 +6,7 @@ import * as LucideIcons from "lucide-react";
 import { BookOpen, CheckSquare, ChevronRight, Save, X } from "lucide-react";
 import { useGarden } from "@/context/GardenContext";
 import { SECTION_ORDER, SECTION_META, SECTION_COLORS } from "@/lib/constants";
+
 import { getProjectsBySection, timeAgo } from "@/lib/utils";
 import type { Project, SectionId } from "@/lib/types";
 import { getIcon } from "@/components/ui/IconPicker";
@@ -183,7 +184,7 @@ function DetailPanel({ project }: { project: Project }) {
               value={title}
               onChange={(e) => { setTitle(e.target.value); setDirty(true); }}
               className="flex-1 font-accent text-2xl text-soft-brown bg-transparent border-b border-transparent
-                focus:border-warm-gray-light/40 outline-none pb-0.5 transition-colors"
+                focus:border-warm-gray-light/40 outline-none pb-0.5 transition-colors w-full"
             />
           </div>
 
@@ -270,7 +271,7 @@ function DetailPanel({ project }: { project: Project }) {
               <p className="text-xs font-medium text-warm-gray uppercase tracking-wide">Captain&apos;s Log</p>
               <span className="text-[10px] text-warm-gray/60">({project.journalEntries.length})</span>
             </div>
-            <ProjectJournal project={project} />
+            <ProjectJournal project={project} hideHeader />
           </div>
 
           {/* Milestones */}
@@ -284,7 +285,7 @@ function DetailPanel({ project }: { project: Project }) {
                 </span>
               )}
             </div>
-            <ProjectChecklist project={project} />
+            <ProjectChecklist project={project} hideHeader />
           </div>
         </motion.div>
       </AnimatePresence>
@@ -298,52 +299,121 @@ interface ThreePanelViewProps {
   filtered: Project[];
 }
 
+type MobileStep = "nav" | "list" | "detail";
+
 export default function ThreePanelView({ filtered }: ThreePanelViewProps) {
   const [activeSection, setActiveSection] = useState<SectionId>("currently-playing");
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [mobileStep, setMobileStep] = useState<MobileStep>("nav");
 
   const sectionProjects = getProjectsBySection(filtered, activeSection);
 
-  // Auto-select first project when section changes
   useEffect(() => {
     setSelectedProject(sectionProjects[0] ?? null);
   }, [activeSection]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Keep selected project in sync if underlying data changes
   const syncedProject = selectedProject
     ? filtered.find((p) => p.id === selectedProject.id) ?? null
     : null;
 
-  return (
-    <div className="flex gap-0 h-[calc(100vh-10rem)] rounded-2xl border border-warm-gray-light/20 bg-white/20 overflow-hidden">
-      {/* Left nav */}
-      <div className="border-r border-warm-gray-light/20 p-2">
+  const sectionMeta = SECTION_META[activeSection];
+
+  // ── Mobile breadcrumb bar ─────────────────────────────────────────────────
+  const MobileBreadcrumb = () => (
+    <div className="sm:hidden flex items-center gap-1.5 mb-3 text-xs text-warm-gray">
+      <button
+        onClick={() => setMobileStep("nav")}
+        className={mobileStep === "nav" ? "text-soft-brown font-medium" : "hover:text-soft-brown"}
+      >
+        Sections
+      </button>
+      {mobileStep !== "nav" && (
+        <>
+          <ChevronRight size={12} />
+          <button
+            onClick={() => setMobileStep("list")}
+            className={mobileStep === "list" ? "text-soft-brown font-medium" : "hover:text-soft-brown"}
+          >
+            {sectionMeta.label}
+          </button>
+        </>
+      )}
+      {mobileStep === "detail" && syncedProject && (
+        <>
+          <ChevronRight size={12} />
+          <span className="text-soft-brown font-medium truncate">{syncedProject.title}</span>
+        </>
+      )}
+    </div>
+  );
+
+  // ── Mobile: one panel at a time ───────────────────────────────────────────
+  const mobileContent = () => {
+    if (mobileStep === "nav") {
+      return (
         <LeftNav
           filtered={filtered}
           activeSection={activeSection}
-          onSelect={(s) => { setActiveSection(s); setSelectedProject(null); }}
+          onSelect={(s) => {
+            setActiveSection(s);
+            setSelectedProject(null);
+            setMobileStep("list");
+          }}
         />
-      </div>
-
-      {/* Middle list */}
-      <div className="border-r border-warm-gray-light/20 p-3 overflow-y-auto">
+      );
+    }
+    if (mobileStep === "list") {
+      return (
         <MiddleList
           projects={sectionProjects}
           selectedId={syncedProject?.id ?? null}
-          onSelect={setSelectedProject}
+          onSelect={(p) => { setSelectedProject(p); setMobileStep("detail"); }}
         />
+      );
+    }
+    return syncedProject ? (
+      <DetailPanel project={syncedProject} />
+    ) : (
+      <p className="text-warm-gray italic font-accent text-lg text-center py-12">Select a project</p>
+    );
+  };
+
+  return (
+    <>
+      {/* ── Mobile layout (< sm) ─────────────────────────────────────── */}
+      <div className="sm:hidden">
+        <MobileBreadcrumb />
+        <div className="rounded-2xl border border-warm-gray-light/20 bg-white/20 p-4 min-h-[60vh]">
+          {mobileContent()}
+        </div>
       </div>
 
-      {/* Right detail */}
-      <div className="flex-1 p-4 overflow-y-auto">
-        {syncedProject ? (
-          <DetailPanel project={syncedProject} />
-        ) : (
-          <div className="flex items-center justify-center h-full">
-            <p className="text-warm-gray italic font-accent text-lg">Select a project</p>
-          </div>
-        )}
+      {/* ── Desktop layout (sm+) ─────────────────────────────────────── */}
+      <div className="hidden sm:flex gap-0 h-[calc(100vh-10rem)] rounded-2xl border border-warm-gray-light/20 bg-white/20 overflow-hidden">
+        <div className="border-r border-warm-gray-light/20 p-2">
+          <LeftNav
+            filtered={filtered}
+            activeSection={activeSection}
+            onSelect={(s) => { setActiveSection(s); setSelectedProject(null); }}
+          />
+        </div>
+        <div className="border-r border-warm-gray-light/20 p-3 overflow-y-auto">
+          <MiddleList
+            projects={sectionProjects}
+            selectedId={syncedProject?.id ?? null}
+            onSelect={setSelectedProject}
+          />
+        </div>
+        <div className="flex-1 p-4 overflow-y-auto">
+          {syncedProject ? (
+            <DetailPanel project={syncedProject} />
+          ) : (
+            <div className="flex items-center justify-center h-full">
+              <p className="text-warm-gray italic font-accent text-lg">Select a project</p>
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 }

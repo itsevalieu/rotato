@@ -1,8 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Plus, Sprout } from "lucide-react";
-import { motion } from "framer-motion";
+import { Plus } from "lucide-react";
 import { GardenProvider, useGarden } from "@/context/GardenContext";
 import Header from "@/components/layout/Header";
 import AmbientBackground from "@/components/layout/AmbientBackground";
@@ -13,7 +12,6 @@ import ArchivedSection from "@/components/garden/ArchivedSection";
 import FocusBanner from "@/components/garden/FocusBanner";
 import ActivityHeatmap from "@/components/garden/ActivityHeatmap";
 import Button from "@/components/ui/Button";
-import type { SectionId } from "@/lib/types";
 
 const WIDE_MODES = new Set(["kanban", "three-panel"]);
 const FULL_MODES = new Set(["quadrant", "deck", "river", "three-panel"]);
@@ -23,7 +21,6 @@ function GardenContent() {
   const [searchQuery, setSearchQuery] = useState("");
   const [tagFilter, setTagFilter] = useState<string | undefined>();
   const [createOpen, setCreateOpen] = useState(false);
-  const [createSection, setCreateSection] = useState<SectionId>("currently-playing");
 
   const isWide = WIDE_MODES.has(state.viewMode);
   const isFullBleed = FULL_MODES.has(state.viewMode);
@@ -48,25 +45,11 @@ function GardenContent() {
           </div>
           <div className="flex gap-2 shrink-0">
             <Button
-              onClick={() => {
-                setCreateSection("currently-playing");
-                setCreateOpen(true);
-              }}
+              onClick={() => setCreateOpen(true)}
               icon={<Plus size={16} />}
               size="sm"
             >
               New Project
-            </Button>
-            <Button
-              variant="secondary"
-              onClick={() => {
-                setCreateSection("seeds");
-                setCreateOpen(true);
-              }}
-              icon={<Sprout size={16} />}
-              size="sm"
-            >
-              Plant Seed
             </Button>
           </div>
         </div>
@@ -80,7 +63,7 @@ function GardenContent() {
       <ProjectForm
         open={createOpen}
         onClose={() => setCreateOpen(false)}
-        defaultSection={createSection}
+        defaultSection="currently-playing"
       />
     </>
   );

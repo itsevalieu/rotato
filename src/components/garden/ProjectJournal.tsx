@@ -10,6 +10,7 @@ import { timeAgo } from "@/lib/utils";
 
 interface ProjectJournalProps {
   project: Project;
+  hideHeader?: boolean;
 }
 
 const WEATHER_EMOJI: Record<string, string> = {
@@ -20,7 +21,7 @@ const WEATHER_EMOJI: Record<string, string> = {
   starry: "✨",
 };
 
-export default function ProjectJournal({ project }: ProjectJournalProps) {
+export default function ProjectJournal({ project, hideHeader = false }: ProjectJournalProps) {
   const { state, dispatch } = useGarden();
   const [text, setText] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -52,15 +53,17 @@ export default function ProjectJournal({ project }: ProjectJournalProps) {
 
   return (
     <div className="mt-3 border-t border-warm-gray-light/20 pt-3 space-y-3">
-      <p className="text-xs font-medium text-warm-gray flex items-center gap-1.5">
-        <BookOpen size={12} />
-        Captain&apos;s Log
-        {entries.length > 0 && (
-          <span className="bg-parchment rounded-full px-1.5 py-0.5 text-[10px]">
-            {entries.length}
-          </span>
-        )}
-      </p>
+      {!hideHeader && (
+        <p className="text-xs font-medium text-warm-gray flex items-center gap-1.5">
+          <BookOpen size={12} />
+          Captain&apos;s Log
+          {entries.length > 0 && (
+            <span className="bg-parchment rounded-full px-1.5 py-0.5 text-[10px]">
+              {entries.length}
+            </span>
+          )}
+        </p>
+      )}
 
       {/* Quick-add */}
       <form onSubmit={handleSubmit} className="flex gap-2 items-end">
@@ -71,8 +74,8 @@ export default function ProjectJournal({ project }: ProjectJournalProps) {
           onKeyDown={handleKeyDown}
           placeholder="Log a thought… ⌘↵ to save"
           rows={2}
-          className="flex-1 text-sm bg-white/60 border border-warm-gray-light/30 rounded-xl px-3 py-2
-            text-soft-brown placeholder:text-warm-gray/50 resize-none focus:outline-none
+          className="flex-1 text-sm bg-white/60 dark:bg-white/[0.06] border border-warm-gray-light/30 rounded-xl px-3 py-2
+            text-soft-brown placeholder:text-warm-gray/70 resize-none focus:outline-none
             focus:ring-2 focus:ring-terracotta/30 focus:border-terracotta/40 transition-all"
         />
         <button

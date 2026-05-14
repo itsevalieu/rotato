@@ -115,10 +115,12 @@ function SortableProject({
 function DroppableSection({
   sectionId,
   children,
+  footer,
   ...sectionProps
 }: {
   sectionId: SectionId;
   children: React.ReactNode;
+  footer?: React.ReactNode;
   count: number;
   collapsed: boolean;
   onToggleCollapse: () => void;
@@ -131,11 +133,50 @@ function DroppableSection({
       <Section
         sectionId={sectionId}
         isOver={isOver}
+        footer={footer}
         {...sectionProps}
       >
         {children}
       </Section>
     </div>
+  );
+}
+
+function SeedQuickAdd({ onCreate }: { onCreate: (title: string) => void }) {
+  const [value, setValue] = useState("");
+
+  const commit = () => {
+    const trimmed = value.trim();
+    if (!trimmed) return;
+    onCreate(trimmed);
+    setValue("");
+  };
+
+  return (
+    <form
+      onSubmit={(e) => { e.preventDefault(); commit(); }}
+      className="flex items-center gap-2"
+    >
+      <input
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+        placeholder="Jot down a seed idea…"
+        className="flex-1 text-sm bg-white/60 border border-warm-gray-light/30 rounded-xl px-3 py-2
+          text-soft-brown placeholder:text-warm-gray/50 focus:outline-none focus:ring-2
+          focus:ring-sage/30 focus:border-sage/40 transition-all"
+      />
+      <button
+        type="submit"
+        disabled={!value.trim()}
+        className="p-2 rounded-xl bg-sage/80 text-cream disabled:opacity-30 disabled:cursor-not-allowed
+          hover:bg-sage transition-colors shrink-0"
+        aria-label="Plant seed"
+      >
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M12 22V12" /><path d="M5 3a14.7 14.7 0 0 0 7 9 14.7 14.7 0 0 0 7-9" /><path d="M2 8h20" />
+        </svg>
+      </button>
+    </form>
   );
 }
 
@@ -148,7 +189,7 @@ export default function GardenBoard({
   searchQuery,
   tagFilter,
 }: GardenBoardProps) {
-  const { state, dispatch } = useGarden();
+  const { state, dispatch, createProject } = useGarden();
   const [editingProject, setEditingProject] = useState<Project | null>(null);
   const [formOpen, setFormOpen] = useState(false);
   const [formSection, setFormSection] = useState<SectionId>("currently-playing");
@@ -352,6 +393,22 @@ export default function GardenBoard({
                   }
                   onShuffle={() =>
                     dispatch({ type: "SHUFFLE_SECTION", sectionId })
+                  }
+                  footer={
+                    sectionId === "seeds" ? (
+                      <SeedQuickAdd
+                        onCreate={(title) =>
+                          createProject({
+                            title,
+                            description: "",
+                            section: "seeds",
+                            tags: [],
+                            journalEntries: [],
+                            checklistItems: [],
+                          })
+                        }
+                      />
+                    ) : undefined
                   }
                 >
                   <AnimatePresence mode="popLayout">

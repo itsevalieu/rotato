@@ -9,9 +9,10 @@ import type { Project } from "@/lib/types";
 
 interface ProjectChecklistProps {
   project: Project;
+  hideHeader?: boolean;
 }
 
-export default function ProjectChecklist({ project }: ProjectChecklistProps) {
+export default function ProjectChecklist({ project, hideHeader = false }: ProjectChecklistProps) {
   const { dispatch } = useGarden();
   const [newText, setNewText] = useState("");
 
@@ -36,15 +37,17 @@ export default function ProjectChecklist({ project }: ProjectChecklistProps) {
 
   return (
     <div className="mt-3 border-t border-warm-gray-light/20 pt-3 space-y-2">
-      <p className="text-xs font-medium text-warm-gray flex items-center gap-1.5">
-        <CheckSquare size={12} />
-        Milestones
-        {items.length > 0 && (
-          <span className="bg-parchment rounded-full px-1.5 py-0.5 text-[10px]">
-            {done}/{items.length}
-          </span>
-        )}
-      </p>
+      {!hideHeader && (
+        <p className="text-xs font-medium text-warm-gray flex items-center gap-1.5">
+          <CheckSquare size={12} />
+          Milestones
+          {items.length > 0 && (
+            <span className="bg-parchment rounded-full px-1.5 py-0.5 text-[10px]">
+              {done}/{items.length}
+            </span>
+          )}
+        </p>
+      )}
 
       {/* Progress bar */}
       {items.length > 0 && (
@@ -119,8 +122,8 @@ export default function ProjectChecklist({ project }: ProjectChecklistProps) {
           onChange={(e) => setNewText(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder="Add a milestone…"
-          className="flex-1 text-sm bg-white/60 border border-warm-gray-light/30 rounded-lg px-2.5 py-1.5
-            text-soft-brown placeholder:text-warm-gray/50 focus:outline-none focus:ring-2
+          className="flex-1 text-sm bg-white/60 dark:bg-white/[0.06] border border-warm-gray-light/30 rounded-lg px-2.5 py-1.5
+            text-soft-brown placeholder:text-warm-gray/70 focus:outline-none focus:ring-2
             focus:ring-sage/30 focus:border-sage/40 transition-all"
         />
         <button

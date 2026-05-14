@@ -15,6 +15,7 @@ interface SectionProps {
   onShuffle?: () => void;
   isOver?: boolean;
   children: ReactNode;
+  footer?: ReactNode;
   droppableProps?: Record<string, unknown>;
 }
 
@@ -28,6 +29,7 @@ export default function Section({
   onShuffle,
   isOver,
   children,
+  footer,
   droppableProps,
 }: SectionProps) {
   const meta = SECTION_META[sectionId];
@@ -53,7 +55,7 @@ export default function Section({
     <motion.section
       layout
       className={`rounded-2xl border transition-all duration-300 ${
-        isOver ? glowMap[meta.color] : "border-warm-gray-light/20 bg-white/30"
+        isOver ? glowMap[meta.color] : "border-warm-gray-light/20 bg-white/30 dark:bg-white/[0.04] dark:border-white/[0.08]"
       }`}
       role="region"
       aria-label={`${meta.label} projects`}
@@ -120,6 +122,7 @@ export default function Section({
               ) : (
                 <div className="space-y-3">{children}</div>
               )}
+              {footer && <div className="mt-3">{footer}</div>}
             </div>
           </motion.div>
         )}
