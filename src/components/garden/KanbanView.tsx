@@ -91,7 +91,7 @@ function KanbanColumn({
     <div
       ref={setNodeRef}
       className={`flex flex-col w-72 shrink-0 rounded-2xl transition-all duration-300 ${
-        isOver ? "border-2 bg-white/50" : "border border-warm-gray-light/20 bg-white/30"
+        isOver ? "border-2 bg-white/50 dark:bg-white/[0.08]" : "border border-warm-gray-light/20 bg-white/30 dark:bg-white/[0.04] dark:border-white/[0.08]"
       }`}
       style={isOver ? { borderColor: accentHex } : undefined}
     >

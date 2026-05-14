@@ -86,7 +86,7 @@ export default function ActivityHeatmap() {
   }
 
   return (
-    <div className="mt-6 rounded-2xl border border-warm-gray-light/20 bg-white/30 p-5">
+    <div className="mt-6 rounded-2xl border border-warm-gray-light/20 bg-white/30 dark:bg-white/[0.04] dark:border-white/[0.08] p-5">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <Activity size={16} className="text-warm-gray" />

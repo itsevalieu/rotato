@@ -21,7 +21,7 @@ export default function Badge({
         ${
           color
             ? ""
-            : "bg-parchment text-soft-brown-light border border-warm-gray-light/30"
+            : "bg-parchment dark:bg-white/[0.08] text-soft-brown-light border border-warm-gray-light/30 dark:border-white/[0.12]"
         }
         ${onClick ? "cursor-pointer hover:opacity-80" : ""}
         ${className}
@@ -29,9 +29,9 @@ export default function Badge({
       style={
         color
           ? {
-              backgroundColor: `${color}20`,
+              backgroundColor: `${color}28`,
               color: color,
-              borderColor: `${color}40`,
+              borderColor: `${color}50`,
               borderWidth: 1,
             }
           : undefined

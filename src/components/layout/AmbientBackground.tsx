@@ -9,7 +9,7 @@ export default function AmbientBackground() {
 
   return (
     <div
-      className="fixed inset-0 -z-10 ambient-bg pointer-events-none"
+      className={`fixed inset-0 -z-10 ambient-bg weather-${state.creativeWeather} pointer-events-none transition-all duration-[3000ms]`}
       aria-hidden
     />
   );

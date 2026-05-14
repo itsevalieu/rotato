@@ -17,7 +17,7 @@ export default function Card({
   return (
     <div
       className={`
-        relative bg-white/80 backdrop-blur-sm rounded-2xl
+        relative bg-white/80 dark:bg-white/[0.06] backdrop-blur-sm rounded-2xl
         shadow-warm-sm border border-warm-gray-light/30
         ${hoverable ? "hover:shadow-warm transition-shadow duration-300" : ""}
         overflow-hidden

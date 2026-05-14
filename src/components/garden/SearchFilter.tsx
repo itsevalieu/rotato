@@ -34,7 +34,7 @@ export default function SearchFilter({
           onChange={(e) => onQueryChange(e.target.value)}
           placeholder="Search projects..."
           className="w-full pl-9 pr-9 py-2 rounded-xl border border-warm-gray-light/50
-            bg-white/60 text-soft-brown placeholder:text-warm-gray text-sm
+            bg-white/60 dark:bg-white/[0.06] text-soft-brown placeholder:text-warm-gray text-sm
             focus:outline-none focus:ring-2 focus:ring-terracotta-light/50
             focus:border-terracotta-light transition-colors duration-200"
           aria-label="Search projects"

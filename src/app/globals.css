@@ -36,13 +36,25 @@
 html.dark {
   --background: #1E1813;
   --foreground: #E8DDD5;
+  /* Backgrounds */
   --color-cream: #1E1813;
   --color-cream-dark: #261E18;
   --color-parchment: #2C2219;
-  --color-soft-brown: #E0D4CC;
-  --color-soft-brown-light: #C4B8B0;
-  --color-warm-gray: #8A7C70;
-  --color-warm-gray-light: #5C5048;
+  /* Text — all must contrast against ~#1E1813 and section bg ~#282218 */
+  --color-soft-brown: #F0E4DA;       /* raised for thin Caveat strokes */
+  --color-soft-brown-light: #D4C8C0;
+  --color-warm-gray: #C8B8A8;        /* was #8A7C70 — too dim at opacity */
+  --color-warm-gray-light: #5C5048;  /* used for borders only, not text */
+  /* Accent colours — brightened so they read on dark bg */
+  --color-terracotta: #D9917A;
+  --color-terracotta-light: #E0A890;
+  --color-sage: #9EB896;
+  --color-sage-light: #B4C8AC;
+  --color-dusty-blue: #90B4C8;
+  --color-dusty-blue-light: #A8C8D8;
+  --color-muted-gold: #D4B47A;
+  --color-muted-gold-light: #E0C894;
+  /* Shadows */
   --shadow-warm-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
   --shadow-warm: 0 4px 12px rgba(0, 0, 0, 0.4);
   --shadow-warm-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
@@ -85,17 +97,132 @@ body {
   50% { background-position: 100% 50%; }
 }
 
+/* Base ambient — used when no weather class is set */
 .ambient-bg {
-  background: linear-gradient(
-    135deg,
-    var(--color-cream) 0%,
-    var(--color-parchment) 25%,
-    var(--color-sage-light) 50%,
-    var(--color-dusty-blue-light) 75%,
-    var(--color-cream) 100%
-  );
   background-size: 400% 400%;
   animation: ambientShift 20s ease infinite;
+}
+
+/* ☀️ Sunny — warm golden */
+.ambient-bg.weather-sunny {
+  background: linear-gradient(
+    135deg,
+    #fdf6e3 0%,
+    #fbecc8 25%,
+    #f5d98b 50%,
+    #fbecc8 75%,
+    #fdf6e3 100%
+  );
+}
+
+/* 🌬️ Breezy — light, airy, pale mint */
+.ambient-bg.weather-breezy {
+  background: linear-gradient(
+    135deg,
+    #f0f7f4 0%,
+    #e2f0eb 25%,
+    #c8e6dc 50%,
+    #daf0e8 75%,
+    #f0f7f4 100%
+  );
+}
+
+/* 🌧️ Cozy Rain — soft blue-grey */
+.ambient-bg.weather-cozy-rain {
+  background: linear-gradient(
+    135deg,
+    #eef2f6 0%,
+    #dce6f0 25%,
+    #c5d5e8 50%,
+    #dce6f0 75%,
+    #eef2f6 100%
+  );
+}
+
+/* 🌫️ Foggy — muted, desaturated lavender-grey */
+.ambient-bg.weather-foggy {
+  background: linear-gradient(
+    135deg,
+    #f0eeec 0%,
+    #e4e0dc 25%,
+    #d4cfc9 50%,
+    #e4e0dc 75%,
+    #f0eeec 100%
+  );
+}
+
+/* ✨ Starry — deep indigo-cream dusk */
+.ambient-bg.weather-starry {
+  background: linear-gradient(
+    135deg,
+    #ece8f4 0%,
+    #d8d0ec 25%,
+    #c0b4e0 50%,
+    #d8d0ec 75%,
+    #ece8f4 100%
+  );
+}
+
+/* ─── Dark mode ambient tones ──────────────────────────────────────────────── */
+
+/* ☀️ Sunny dark — deep amber dusk */
+html.dark .ambient-bg.weather-sunny {
+  background: linear-gradient(
+    135deg,
+    #2a1f0a 0%,
+    #3d2d0f 25%,
+    #5a3e10 50%,
+    #3d2d0f 75%,
+    #2a1f0a 100%
+  );
+}
+
+/* 🌬️ Breezy dark — deep forest teal */
+html.dark .ambient-bg.weather-breezy {
+  background: linear-gradient(
+    135deg,
+    #0d1f19 0%,
+    #132e22 25%,
+    #1a4030 50%,
+    #132e22 75%,
+    #0d1f19 100%
+  );
+}
+
+/* 🌧️ Cozy Rain dark — stormy deep slate */
+html.dark .ambient-bg.weather-cozy-rain {
+  background: linear-gradient(
+    135deg,
+    #0e1520 0%,
+    #162030 25%,
+    #1e2d42 50%,
+    #162030 75%,
+    #0e1520 100%
+  );
+}
+
+/* 🌫️ Foggy dark — charcoal haze */
+html.dark .ambient-bg.weather-foggy {
+  background: linear-gradient(
+    135deg,
+    #181614 0%,
+    #242120 25%,
+    #2e2b28 50%,
+    #242120 75%,
+    #181614 100%
+  );
+}
+
+/* ✨ Starry dark — midnight indigo */
+html.dark .ambient-bg.weather-starry {
+  background: linear-gradient(
+    135deg,
+    #0c0a1a 0%,
+    #150f2e 25%,
+    #1e1545 50%,
+    #150f2e 75%,
+    #0c0a1a 100%
+  );
 }
 
 /* Skip link for accessibility */
