@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Activity } from "lucide-react";
 import { useGarden } from "@/context/GardenContext";
@@ -19,7 +19,10 @@ function startOfDay(d: Date): Date {
 
 export default function ActivityHeatmap() {
   const { state } = useGarden();
+  const [mounted, setMounted] = useState(false);
   const [tooltip, setTooltip] = useState<{ text: string; x: number; y: number } | null>(null);
+
+  useEffect(() => { setMounted(true); }, []);
 
   const { grid, totalEntries, monthLabels } = useMemo(() => {
     // Count entries per day
@@ -84,6 +87,9 @@ export default function ActivityHeatmap() {
     if (intensity < 0.75) return "bg-terracotta/65";
     return "bg-terracotta/90";
   }
+
+  // Don't render during SSR — the grid depends on local-timezone "today"
+  if (!mounted) return null;
 
   return (
     <div className="mt-6 rounded-2xl border border-warm-gray-light/20 bg-white/30 dark:bg-white/[0.04] dark:border-white/[0.08] p-5">

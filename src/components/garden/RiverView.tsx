@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { motion } from "framer-motion";
 import { BookOpen, ArrowRight, Sprout, Filter } from "lucide-react";
 import { useGarden } from "@/context/GardenContext";
@@ -105,9 +105,12 @@ interface RiverViewProps {
 
 export default function RiverView({ filtered }: RiverViewProps) {
   const { state } = useGarden();
+  const [mounted, setMounted] = useState(false);
   const [editingProject, setEditingProject] = useState<Project | null>(null);
   const [formOpen, setFormOpen] = useState(false);
   const [sectionFilter, setSectionFilter] = useState<SectionId | "all">("all");
+
+  useEffect(() => { setMounted(true); }, []);
 
   const visible = sectionFilter === "all" ? filtered : filtered.filter((p) => p.section === sectionFilter);
   const feed = useMemo(() => buildActivityFeed(visible), [visible]);
@@ -117,6 +120,8 @@ export default function RiverView({ filtered }: RiverViewProps) {
     const project = state.projects.find((p) => p.id === projectId);
     if (project) { setEditingProject(project); setFormOpen(true); }
   };
+
+  if (!mounted) return null;
 
   return (
     <>

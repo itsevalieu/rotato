@@ -106,6 +106,7 @@ export default function ProjectJournal({ project, hideHeader = false }: ProjectJ
               <time
                 dateTime={entry.createdAt}
                 title={new Date(entry.createdAt).toLocaleString()}
+                suppressHydrationWarning
               >
                 {timeAgo(entry.createdAt)}
               </time>
