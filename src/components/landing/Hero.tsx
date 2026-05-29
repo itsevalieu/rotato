@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Flower2 } from "lucide-react";
+import PotatoLogo from "@/components/ui/PotatoLogo";
 
 const floatingCards = [
   { label: "Watercolor Journal", sub: "Currently Playing", color: "#C67B5C", style: { top: "12%",   left: "4%" },   delay: 0   },
@@ -62,7 +62,7 @@ export default function Hero() {
           transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
           className="mb-6"
         >
-          <Flower2 size={48} className="mx-auto text-terracotta" />
+          <PotatoLogo size={72} className="mx-auto drop-shadow-md" />
         </motion.div>
 
         <h1 className="font-accent text-5xl sm:text-7xl text-soft-brown mb-4">

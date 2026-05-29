@@ -94,6 +94,7 @@ export const ICON_OPTIONS = [
 ] as const;
 
 export const STORAGE_KEY = "rotato-garden-state";
+export const ONBOARDING_KEY = "rotato-onboarding-done";
 
 export const SECTION_COLORS: Record<string, string> = {
   "currently-playing": "#C67B5C",

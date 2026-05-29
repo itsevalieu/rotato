@@ -185,6 +185,9 @@ function gardenReducer(state: GardenState, action: GardenAction): GardenState {
         ),
       };
 
+    case "CLEAR_DEMO_DATA":
+      return { ...state, projects: [], isDemoData: false };
+
     case "REORDER_PROJECTS": {
       const reorderedInSection = action.projectIds
         .map((id) => state.projects.find((p) => p.id === id))

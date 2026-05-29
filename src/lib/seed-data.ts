@@ -1,16 +1,7 @@
-import type { Project, GardenState, JournalEntry, ChecklistItem } from "./types";
-import { nanoid } from "nanoid";
+import type { Project, GardenState } from "./types";
 
-function makeEntry(text: string, daysAgoCount: number): JournalEntry {
-  return { id: nanoid(), text, createdAt: new Date(Date.now() - daysAgoCount * 86400000).toISOString() };
-}
-
-function makeCheck(text: string, done = false): ChecklistItem {
-  return { id: nanoid(), text, done };
-}
-
-const daysAgo = (d: number) =>
-  new Date(Date.now() - d * 86400000).toISOString();
+// All dates are static so server and client produce identical HTML (no hydration mismatch).
+// Reference point: 2026-05-12
 
 const seedProjects: Project[] = [
   {
@@ -21,19 +12,27 @@ const seedProjects: Project[] = [
     section: "currently-playing",
     inspirationText: "Inspired by the golden hour light through kitchen windows",
     tags: ["art", "watercolor", "daily-practice"],
-    lastTouchedAt: daysAgo(1),
-    createdAt: daysAgo(45),
+    lastTouchedAt: "2026-05-11T10:00:00.000Z",
+    createdAt: "2026-03-28T10:00:00.000Z",
     color: "#C67B5C",
     icon: "Palette",
     nextTinyStep: "Paint the succulent on the windowsill",
     journalEntries: [
-      makeEntry("Finally figured out how to get that soft edge on wet paper. The trick is patience.", 1),
-      makeEntry("Started with leaves today. Botanical shapes are harder than they look.", 8),
+      {
+        id: "je-1-1",
+        text: "Finally figured out how to get that soft edge on wet paper. The trick is patience.",
+        createdAt: "2026-05-11T10:00:00.000Z",
+      },
+      {
+        id: "je-1-2",
+        text: "Started with leaves today. Botanical shapes are harder than they look.",
+        createdAt: "2026-05-04T10:00:00.000Z",
+      },
     ],
     checklistItems: [
-      makeCheck("Buy cold-press paper", true),
-      makeCheck("Practice wet-on-wet technique"),
-      makeCheck("Fill one full sketchbook page"),
+      { id: "ci-1-1", text: "Buy cold-press paper", done: true },
+      { id: "ci-1-2", text: "Practice wet-on-wet technique", done: false },
+      { id: "ci-1-3", text: "Fill one full sketchbook page", done: false },
     ],
     timeline: [],
     archived: false,
@@ -46,16 +45,16 @@ const seedProjects: Project[] = [
     section: "currently-playing",
     inspirationText: "The sound of rain on a tin roof",
     tags: ["music", "ambient", "recording"],
-    lastTouchedAt: daysAgo(3),
-    createdAt: daysAgo(60),
+    lastTouchedAt: "2026-05-09T10:00:00.000Z",
+    createdAt: "2026-03-13T10:00:00.000Z",
     color: "#7E9BB0",
     icon: "Music",
     nextTinyStep: "Record the creek behind the house at dawn",
     journalEntries: [],
     checklistItems: [
-      makeCheck("Record creek at dawn"),
-      makeCheck("Layer synth pad on track 1", true),
-      makeCheck("Master and export"),
+      { id: "ci-2-1", text: "Record creek at dawn", done: false },
+      { id: "ci-2-2", text: "Layer synth pad on track 1", done: true },
+      { id: "ci-2-3", text: "Master and export", done: false },
     ],
     timeline: [],
     archived: false,
@@ -68,44 +67,39 @@ const seedProjects: Project[] = [
     section: "resting",
     inspirationText: "What if a library could remember everyone who visited?",
     tags: ["writing", "fiction", "short-stories"],
-    lastTouchedAt: daysAgo(30),
-    createdAt: daysAgo(120),
+    lastTouchedAt: "2026-04-12T10:00:00.000Z",
+    createdAt: "2026-01-12T10:00:00.000Z",
     color: "#C9A96E",
     icon: "BookOpen",
     nextTinyStep: "Outline the story about the clockmaker",
     journalEntries: [
-      makeEntry("Taking a break from this one. The characters need time to develop in my mind.", 30),
+      {
+        id: "je-3-1",
+        text: "Taking a break from this one. The characters need time to develop in my mind.",
+        createdAt: "2026-04-12T10:00:00.000Z",
+      },
     ],
     checklistItems: [],
     timeline: [
-      {
-        from: "currently-playing",
-        to: "resting",
-        movedAt: daysAgo(30),
-      },
+      { from: "currently-playing", to: "resting", movedAt: "2026-04-12T10:00:00.000Z" },
     ],
     archived: false,
   },
   {
     id: "seed-4",
     title: "Ceramics Experiments",
-    description:
-      "Hand-building wonky mugs and small bowls. Embracing imperfection.",
+    description: "Hand-building wonky mugs and small bowls. Embracing imperfection.",
     section: "resting",
     tags: ["craft", "ceramics", "3d"],
-    lastTouchedAt: daysAgo(14),
-    createdAt: daysAgo(90),
+    lastTouchedAt: "2026-04-28T10:00:00.000Z",
+    createdAt: "2026-02-11T10:00:00.000Z",
     color: "#A8998A",
     icon: "Gem",
     nextTinyStep: "Try the new speckled glaze on a test tile",
     journalEntries: [],
     checklistItems: [],
     timeline: [
-      {
-        from: "currently-playing",
-        to: "resting",
-        movedAt: daysAgo(14),
-      },
+      { from: "currently-playing", to: "resting", movedAt: "2026-04-28T10:00:00.000Z" },
     ],
     archived: false,
   },
@@ -115,8 +109,8 @@ const seedProjects: Project[] = [
     description: "Find a local workshop or studio to try letterpress printing.",
     section: "seeds",
     tags: ["craft", "typography", "printmaking"],
-    lastTouchedAt: daysAgo(20),
-    createdAt: daysAgo(20),
+    lastTouchedAt: "2026-04-22T10:00:00.000Z",
+    createdAt: "2026-04-22T10:00:00.000Z",
     icon: "Pen",
     journalEntries: [],
     checklistItems: [],
@@ -130,8 +124,8 @@ const seedProjects: Project[] = [
       "A 30-second stop-motion using paper cutouts. Maybe about seasons changing.",
     section: "seeds",
     tags: ["animation", "film", "paper"],
-    lastTouchedAt: daysAgo(10),
-    createdAt: daysAgo(10),
+    lastTouchedAt: "2026-05-02T10:00:00.000Z",
+    createdAt: "2026-05-02T10:00:00.000Z",
     icon: "Film",
     journalEntries: [],
     checklistItems: [],
@@ -141,12 +135,11 @@ const seedProjects: Project[] = [
   {
     id: "seed-7",
     title: "Herb garden zine",
-    description:
-      "A small illustrated zine about growing herbs in an apartment.",
+    description: "A small illustrated zine about growing herbs in an apartment.",
     section: "seeds",
     tags: ["zine", "illustration", "gardening"],
-    lastTouchedAt: daysAgo(5),
-    createdAt: daysAgo(5),
+    lastTouchedAt: "2026-05-07T10:00:00.000Z",
+    createdAt: "2026-05-07T10:00:00.000Z",
     color: "#8B9E82",
     icon: "Leaf",
     journalEntries: [],
@@ -161,24 +154,28 @@ const seedProjects: Project[] = [
       "Completed all 31 days of ink drawings following the official prompt list. A full sketchbook of weird creatures and cozy scenes.",
     section: "finished-worlds",
     tags: ["art", "illustration", "challenge"],
-    lastTouchedAt: daysAgo(200),
-    createdAt: daysAgo(230),
+    lastTouchedAt: "2025-11-24T10:00:00.000Z",
+    createdAt: "2025-10-24T10:00:00.000Z",
     color: "#C9A96E",
     icon: "Feather",
     journalEntries: [
-      makeEntry("This was the first time I finished a month-long challenge. So proud of how the style evolved.", 200),
-      makeEntry("Day 15 — the prompt 'shelter' unlocked something. Drew a snail carrying a tiny house.", 215),
+      {
+        id: "je-8-1",
+        text: "This was the first time I finished a month-long challenge. So proud of how the style evolved.",
+        createdAt: "2025-11-24T10:00:00.000Z",
+      },
+      {
+        id: "je-8-2",
+        text: "Day 15 — the prompt 'shelter' unlocked something. Drew a snail carrying a tiny house.",
+        createdAt: "2025-11-08T10:00:00.000Z",
+      },
     ],
     checklistItems: [
-      makeCheck("Complete all 31 days", true),
-      makeCheck("Scan and post favourite pieces", true),
+      { id: "ci-8-1", text: "Complete all 31 days", done: true },
+      { id: "ci-8-2", text: "Scan and post favourite pieces", done: true },
     ],
     timeline: [
-      {
-        from: "currently-playing",
-        to: "finished-worlds",
-        movedAt: daysAgo(200),
-      },
+      { from: "currently-playing", to: "finished-worlds", movedAt: "2025-11-24T10:00:00.000Z" },
     ],
     archived: false,
   },
@@ -191,6 +188,7 @@ export const initialState: GardenState = {
   collapsedSections: [],
   viewMode: "board",
   hydrated: false,
+  isDemoData: true,
 };
 
 export { seedProjects };

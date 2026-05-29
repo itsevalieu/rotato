@@ -73,6 +73,8 @@ export interface GardenState {
   viewMode: ViewMode;
   focusProjectId?: string;
   hydrated: boolean;
+  /** True while the garden is still populated with the built-in demo projects. */
+  isDemoData?: boolean;
 }
 
 export type GardenAction =
@@ -94,4 +96,5 @@ export type GardenAction =
   | { type: "CLEAR_FOCUS" }
   | { type: "ADD_CHECKLIST_ITEM"; projectId: string; item: ChecklistItem }
   | { type: "TOGGLE_CHECKLIST_ITEM"; projectId: string; itemId: string }
-  | { type: "DELETE_CHECKLIST_ITEM"; projectId: string; itemId: string };
+  | { type: "DELETE_CHECKLIST_ITEM"; projectId: string; itemId: string }
+  | { type: "CLEAR_DEMO_DATA" };

@@ -3,9 +3,10 @@
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import {
-  Flower2, Volume2, VolumeX, Moon, Sun, MoreHorizontal,
+  Volume2, VolumeX, Moon, Sun, MoreHorizontal,
   Shuffle, Download, FileText, FileJson,
 } from "lucide-react";
+import PotatoLogo from "@/components/ui/PotatoLogo";
 import * as LucideIcons from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useGarden } from "@/context/GardenContext";
@@ -214,7 +215,7 @@ export default function Header() {
     <header className="sticky top-0 z-40 bg-cream/80 backdrop-blur-md border-b border-warm-gray-light/20">
       <div className="max-w-7xl mx-auto px-4 py-3 flex items-center gap-2">
         <Link href="/" className="flex items-center gap-2 shrink-0">
-          <Flower2 size={24} className="text-terracotta" />
+          <PotatoLogo size={28} />
           <span className="font-accent text-2xl text-soft-brown hidden sm:inline">rotato</span>
         </Link>
 
