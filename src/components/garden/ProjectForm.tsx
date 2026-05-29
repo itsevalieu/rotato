@@ -2,15 +2,17 @@
 
 import { useState, useEffect } from "react";
 import Modal from "@/components/ui/Modal";
-import Input from "@/components/ui/Input";
-import Textarea from "@/components/ui/Textarea";
-import Button from "@/components/ui/Button";
-import ColorPicker from "@/components/ui/ColorPicker";
-import IconPicker from "@/components/ui/IconPicker";
 import { useGarden } from "@/context/GardenContext";
 import { useToast } from "@/context/ToastContext";
 import type { Project, SectionId } from "@/lib/types";
-import { SECTION_META, SECTION_ORDER } from "@/lib/constants";
+import FormStylePicker from "./FormStylePicker";
+import ClassicForm from "./form-styles/ClassicForm";
+import SentenceForm from "./form-styles/SentenceForm";
+import SeedPacketForm from "./form-styles/SeedPacketForm";
+import TwoBeatForm from "./form-styles/TwoBeatForm";
+import EnvelopeForm from "./form-styles/EnvelopeForm";
+import LivePreviewForm from "./form-styles/LivePreviewForm";
+import type { FormStyleProps } from "./form-styles/types";
 
 interface ProjectFormProps {
   open: boolean;
@@ -25,7 +27,7 @@ export default function ProjectForm({
   project,
   defaultSection = "currently-playing",
 }: ProjectFormProps) {
-  const { dispatch, createProject } = useGarden();
+  const { dispatch, createProject, state } = useGarden();
   const { showToast } = useToast();
   const isEditing = !!project;
 
@@ -105,91 +107,53 @@ export default function ProjectForm({
     onClose();
   };
 
+  const formStyle = state.formStyle ?? "classic";
+  const isLivePreview = formStyle === "live-preview";
+
+  // Classic and Two-beat have their own title in the modal header area
+  const modalTitle =
+    formStyle === "classic" || formStyle === "two-beat"
+      ? isEditing
+        ? "Edit Project"
+        : "Plant Something New"
+      : undefined;
+
+  const formProps: FormStyleProps = {
+    title,
+    setTitle,
+    description,
+    setDescription,
+    inspirationText,
+    setInspirationText,
+    tags,
+    setTags,
+    nextTinyStep,
+    setNextTinyStep,
+    color,
+    setColor,
+    icon,
+    setIcon,
+    section,
+    setSection,
+    isEditing,
+    onSubmit: handleSubmit,
+    onClose,
+  };
+
   return (
     <Modal
       open={open}
       onClose={onClose}
-      title={isEditing ? "Edit Project" : "Plant Something New"}
+      title={modalTitle}
+      headerAction={<FormStylePicker />}
+      size={isLivePreview ? "lg" : "md"}
     >
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <Input
-          id="title"
-          label="Title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          placeholder="What are you creating?"
-          required
-          autoFocus
-        />
-
-        <Textarea
-          id="description"
-          label="Description"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          placeholder="A few words about this project..."
-          rows={2}
-        />
-
-        <Textarea
-          id="inspiration"
-          label="Inspiration / Mood"
-          value={inspirationText}
-          onChange={(e) => setInspirationText(e.target.value)}
-          placeholder="What inspired this? A feeling, a reference, a moment..."
-          rows={2}
-        />
-
-        <Input
-          id="tags"
-          label="Tags"
-          value={tags}
-          onChange={(e) => setTags(e.target.value)}
-          placeholder="art, watercolor, daily-practice"
-        />
-
-        <Input
-          id="nextTinyStep"
-          label="Next Tiny Step"
-          value={nextTinyStep}
-          onChange={(e) => setNextTinyStep(e.target.value)}
-          placeholder="The smallest possible next action..."
-        />
-
-        <div>
-          <label className="block text-sm font-medium text-soft-brown mb-1.5">
-            Section
-          </label>
-          <div className="flex flex-wrap gap-2">
-            {SECTION_ORDER.map((s) => (
-              <button
-                key={s}
-                type="button"
-                onClick={() => setSection(s)}
-                className={`px-3 py-1.5 rounded-xl text-sm transition-all duration-200 border ${
-                  section === s
-                    ? "bg-parchment border-soft-brown text-soft-brown font-medium"
-                    : "border-warm-gray-light/50 text-warm-gray hover:border-warm-gray"
-                }`}
-              >
-                {SECTION_META[s].label}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <ColorPicker value={color} onChange={setColor} />
-        <IconPicker value={icon} onChange={setIcon} />
-
-        <div className="flex gap-3 pt-2">
-          <Button type="submit" variant="primary" className="flex-1">
-            {isEditing ? "Save Changes" : "Plant It"}
-          </Button>
-          <Button type="button" variant="ghost" onClick={onClose}>
-            Cancel
-          </Button>
-        </div>
-      </form>
+      {formStyle === "classic" && <ClassicForm {...formProps} />}
+      {formStyle === "sentence" && <SentenceForm {...formProps} />}
+      {formStyle === "seed-packet" && <SeedPacketForm {...formProps} />}
+      {formStyle === "two-beat" && <TwoBeatForm {...formProps} />}
+      {formStyle === "envelope" && <EnvelopeForm {...formProps} />}
+      {formStyle === "live-preview" && <LivePreviewForm {...formProps} />}
     </Modal>
   );
 }

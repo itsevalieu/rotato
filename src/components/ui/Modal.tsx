@@ -8,10 +8,12 @@ interface ModalProps {
   open: boolean;
   onClose: () => void;
   title?: string;
+  headerAction?: ReactNode;
+  size?: "md" | "lg";
   children: ReactNode;
 }
 
-export default function Modal({ open, onClose, title, children }: ModalProps) {
+export default function Modal({ open, onClose, title, headerAction, size = "md", children }: ModalProps) {
   const dialogRef = useRef<HTMLDivElement>(null);
   const [mounted, setMounted] = useState(false);
 
@@ -82,14 +84,17 @@ export default function Modal({ open, onClose, title, children }: ModalProps) {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 40, scale: 0.97 }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            className="relative z-10 w-full max-w-lg max-h-[85vh] overflow-y-auto
+            className={`relative z-10 w-full ${size === "lg" ? "max-w-2xl" : "max-w-lg"} max-h-[85vh] overflow-y-auto
               bg-cream rounded-2xl shadow-warm-lg p-6
-              border border-warm-gray-light/30"
+              border border-warm-gray-light/30`}
           >
-            {title && (
-              <h2 className="text-xl font-accent text-soft-brown mb-4">
-                {title}
-              </h2>
+            {(title || headerAction) && (
+              <div className={`flex items-center mb-4 ${title ? "justify-between" : "justify-end"}`}>
+                {title && (
+                  <h2 className="text-xl font-accent text-soft-brown">{title}</h2>
+                )}
+                {headerAction}
+              </div>
             )}
             {children}
           </motion.div>

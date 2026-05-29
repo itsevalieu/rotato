@@ -187,6 +187,7 @@ export const initialState: GardenState = {
   ambientMode: false,
   collapsedSections: [],
   viewMode: "board",
+  formStyle: "classic",
   hydrated: false,
   isDemoData: true,
 };

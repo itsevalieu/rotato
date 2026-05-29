@@ -8,7 +8,7 @@ import {
   useCallback,
   type ReactNode,
 } from "react";
-import type { GardenState, GardenAction, Project, SectionId, JournalEntry, ChecklistItem } from "@/lib/types";
+import type { GardenState, GardenAction, Project, SectionId, JournalEntry, ChecklistItem, FormStyle } from "@/lib/types";
 import { initialState } from "@/lib/seed-data";
 import { loadState, saveState } from "@/lib/storage";
 import { shuffleArray } from "@/lib/utils";
@@ -33,6 +33,7 @@ function gardenReducer(state: GardenState, action: GardenAction): GardenState {
     case "HYDRATE":
       return {
         ...action.state,
+        formStyle: action.state.formStyle ?? ("classic" as FormStyle),
         projects: action.state.projects.map(migrateProject),
         hydrated: true,
       };
@@ -187,6 +188,9 @@ function gardenReducer(state: GardenState, action: GardenAction): GardenState {
 
     case "CLEAR_DEMO_DATA":
       return { ...state, projects: [], isDemoData: false };
+
+    case "SET_FORM_STYLE":
+      return { ...state, formStyle: action.style };
 
     case "REORDER_PROJECTS": {
       const reorderedInSection = action.projectIds

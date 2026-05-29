@@ -52,6 +52,8 @@ export interface Project {
 
 export type ViewMode = "board" | "gallery" | "kanban" | "quadrant" | "river" | "deck" | "three-panel";
 
+export type FormStyle = "classic" | "sentence" | "seed-packet" | "two-beat" | "envelope" | "live-preview";
+
 export interface ActivityEvent {
   id: string;
   type: "journal" | "move" | "created";
@@ -75,6 +77,7 @@ export interface GardenState {
   hydrated: boolean;
   /** True while the garden is still populated with the built-in demo projects. */
   isDemoData?: boolean;
+  formStyle: FormStyle;
 }
 
 export type GardenAction =
@@ -97,4 +100,5 @@ export type GardenAction =
   | { type: "ADD_CHECKLIST_ITEM"; projectId: string; item: ChecklistItem }
   | { type: "TOGGLE_CHECKLIST_ITEM"; projectId: string; itemId: string }
   | { type: "DELETE_CHECKLIST_ITEM"; projectId: string; itemId: string }
-  | { type: "CLEAR_DEMO_DATA" };
+  | { type: "CLEAR_DEMO_DATA" }
+  | { type: "SET_FORM_STYLE"; style: FormStyle };
