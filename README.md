@@ -2,6 +2,8 @@
 
 A cozy, low-pressure creative project rotation app for hobbyists and multidisciplinary creatives.
 
+The name is **rotation** + **potato** — you rotate through your projects the way a garden rotates crops, at a deliberately unhurried pace. A potato grows underground, unbothered. That's the vibe.
+
 Creativity should feel like play, not productivity. Rotato helps you tend your creative projects like a garden — things can grow, rest, and bloom at their own pace.
 
 ## Philosophy
