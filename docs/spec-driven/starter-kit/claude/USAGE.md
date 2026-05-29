@@ -112,6 +112,83 @@ Keep these constraints in mind for everything in this conversation.
 
 ---
 
+---
+
+## Option D: Local LLM (Ollama, LM Studio, or any OpenAI-compatible server)
+
+The script routes to any OpenAI-compatible endpoint via `--provider`. No data leaves your machine.
+
+**Setup with Ollama:**
+
+```bash
+# Install Ollama: https://ollama.com
+ollama pull llama3.1:70b    # for high-stakes skills (red-team, dead-reckoning)
+ollama pull llama3.1:8b     # for most skills
+ollama pull llama3.2:3b     # for template tasks (qa-test-plan, desk-check)
+
+pip install openai           # the script uses openai package for local providers
+```
+
+**Run a skill:**
+
+```bash
+# Dead Reckoning — use a capable model for adversarial tasks
+python run_skill.py dead-reckoning \
+  --input docs/workspace/jira/ROT-006.md \
+  --provider ollama \
+  --model llama3.1:70b \
+  --rules architecture
+
+# Spec compliance check
+python run_skill.py spec-compliance-check \
+  --input docs/workspace/jira/ROT-006.md \
+  --append-git-diff \
+  --provider ollama \
+  --model llama3.1:8b
+
+# QA test plan — lighter model is fine for template tasks
+python run_skill.py qa-test-plan \
+  --input docs/workspace/jira/ROT-006.md \
+  --provider ollama \
+  --model llama3.2:3b
+
+# See the suggested model for any skill
+python run_skill.py dead-reckoning --list-models
+```
+
+**LM Studio:**
+
+```bash
+# Start the local server in LM Studio (Server tab → Start)
+python run_skill.py dead-reckoning \
+  --input ticket.md \
+  --provider lmstudio \
+  --model "qwen2.5-72b-instruct"   # match the model name shown in LM Studio
+```
+
+**Any other OpenAI-compatible server:**
+
+```bash
+python run_skill.py red-team-spec \
+  --input prd.md \
+  --provider local \
+  --base-url http://localhost:8080/v1 \
+  --model my-model \
+  --api-key none   # use any string if the server doesn't require a key
+```
+
+### Choosing a local model
+
+| Skill tier | Skills | Minimum recommendation |
+|---|---|---|
+| High | `red-team-spec`, `dead-reckoning` | 70B+ (e.g. `llama3.1:70b`, `qwen2.5:72b`) |
+| Medium | Most skills | 8B+ (e.g. `llama3.1:8b`, `mistral:7b`) |
+| Low | `qa-test-plan`, `desk-check`, `update-adr` | 3B+ (e.g. `llama3.2:3b`) |
+
+The adversarial skills (`red-team-spec`, `dead-reckoning`) require genuine multi-step reasoning — smaller models tend to be agreeable rather than critical, which defeats the purpose. Use the largest model you can run for those two.
+
+---
+
 ## Which option to use
 
 | Situation | Best option |
@@ -121,3 +198,5 @@ Keep these constraints in mind for everything in this conversation.
 | Quick one-off audit of an existing spec | **Single chat** — paste rules once, run skill |
 | Using Cursor as primary IDE | **Cursor** — rules + skills work automatically |
 | Using both Cursor and Claude | **Both** — keep `.cursor/` in the repo, set up a Claude Project too |
+| Privacy-sensitive project / air-gapped | **Local LLM (Ollama/LM Studio)** — no data leaves your machine |
+| Want to cut API costs on high-volume tasks | **Local LLM** for template-driven skills (qa-test-plan, desk-check, update-adr); cloud for adversarial skills |

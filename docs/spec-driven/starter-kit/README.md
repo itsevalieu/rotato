@@ -100,6 +100,8 @@ These work best after Stage 4, once you have ADRs and a design spec:
 | Run a skill in Claude.ai | Copy the prompt from `SETUP.md` and paste it into the Project chat |
 | Automate skills in CI | Run `python claude/run_skill.py <skill-name> --input <file> --fail-on RED` |
 | Upload docs to Claude | Add PRD, architecture, and design spec as Project Knowledge files |
+| Run fully local (Ollama / LM Studio) | `python claude/run_skill.py <skill> --provider ollama --model llama3.1:70b` |
+| Privacy / air-gapped / cut API costs | Use local for template tasks, cloud for adversarial skills |
 
 See [`claude/USAGE.md`](claude/USAGE.md) for the full walkthrough.
 
