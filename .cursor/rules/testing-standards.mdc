@@ -1,0 +1,33 @@
+---
+description: Rotato testing standards. Naming conventions, coverage requirements, and testing patterns for all test files.
+globs: **/*.test.ts, **/*.test.tsx, **/*.spec.ts
+alwaysApply: false
+---
+
+# Testing Standards
+
+## Naming
+- Describe block: component or function name
+- It block: `"should [behavior] when [condition]"`
+
+```ts
+describe('ProjectForm', () => {
+  it('should preserve field values when style switches', () => { ... })
+  it('should not submit when title is empty', () => { ... })
+})
+```
+
+## Coverage requirements
+- **Happy path**: required for all user-facing interactions
+- **Edge cases**: required for all form submissions (empty, invalid, boundary values)
+- **Regression**: any change to `GardenContext` reducer requires tests for all affected actions
+- **Accessibility**: at minimum, verify interactive elements are keyboard-reachable
+
+## Tools
+- React Testing Library (not Enzyme)
+- `userEvent` over `fireEvent` for interaction simulation
+- Mock `idb-keyval` for all tests touching `GardenContext` persistence
+
+## What not to test
+- Implementation details (internal state shape, specific class names)
+- CSS/visual output — use the `design-review` skill for visual compliance checks

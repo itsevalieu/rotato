@@ -1,0 +1,38 @@
+---
+description: Rotato design system constraints. Enforces color palette, typography, animation, and accessibility rules on all component and style files.
+globs: **/*.tsx, **/*.css
+alwaysApply: true
+---
+
+# Design System
+
+## Colors
+- Use ONLY CSS custom properties from `globals.css`. Never hardcode hex values.
+- Available tokens: `--color-cream`, `--color-cream-dark`, `--color-parchment`, `--color-terracotta`, `--color-terracotta-light`, `--color-terracotta-dark`, `--color-sage`, `--color-sage-light`, `--color-muted-gold`, `--color-dusty-blue`, `--color-warm-gray`, `--color-soft-brown`
+- For project card colors: use values from `PALETTE_COLORS` in `src/lib/constants.ts`
+- **No red-family colors anywhere** (`#FF...`, `#E5...`, `#DC...` ranges). Errors use amber/terracotta. Destructive confirmations use terracotta, not red.
+
+```tsx
+// ❌ BAD
+<div style={{ color: '#C67B5C' }}>
+
+// ✅ GOOD
+<div className="text-terracotta">
+// or
+<div style={{ color: 'var(--color-terracotta)' }}>
+```
+
+## Typography
+- **Caveat**: accent text only — section headers, empty states, special labels
+- **Inter**: all body text, form labels, buttons, inputs, captions
+- Never mix fonts within a single UI element
+
+## Animations
+- Enter: 200–300ms ease-out
+- Exit: 150ms ease-in
+- No transitions under 150ms for content changes
+
+## Accessibility
+- All interactive elements need visible focus rings: `focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-terracotta-light`
+- Color is never the sole state indicator — always pair with an icon or text label
+- Every form input must have an associated `<label>`, not just a placeholder

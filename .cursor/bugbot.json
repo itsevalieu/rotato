@@ -1,0 +1,39 @@
+{
+  "enabled": true,
+  "reviewOn": ["pull_request"],
+  "focus": [
+    {
+      "pattern": "localStorage\\.getItem|localStorage\\.setItem|localStorage\\.removeItem",
+      "note": "Exclude ONBOARDING_KEY usage — that's the one allowed direct localStorage call",
+      "message": "Direct localStorage call detected. Use idb-keyval via src/lib/storage.ts (ADR-003). Exception: ONBOARDING_KEY reads/writes are allowed.",
+      "severity": "warning"
+    },
+    {
+      "pattern": "Date\\.now\\(\\)|new Date\\(\\)|\\.toLocaleString\\(\\)",
+      "context": "jsx_or_tsx",
+      "message": "Dynamic date/time in JSX without suppressHydrationWarning. Add suppressHydrationWarning to the containing element to prevent SSR mismatch (ADR-006).",
+      "severity": "error"
+    },
+    {
+      "pattern": "useSortable|DraggableItem|useDraggable",
+      "message": "dnd-kit draggable component detected. Verify a client-side mounting guard is present (const [mounted, setMounted] = useState(false) + useEffect). Missing guard causes hydration mismatch (ADR-004 + ADR-006).",
+      "severity": "error"
+    },
+    {
+      "pattern": "#[0-9A-Fa-f]{6}|#[0-9A-Fa-f]{3}",
+      "context": "tsx_or_css",
+      "message": "Hardcoded hex color detected. Use CSS custom properties from globals.css (e.g. var(--color-terracotta)) or Tailwind classes. Project color constants live in src/lib/constants.ts.",
+      "severity": "warning"
+    },
+    {
+      "pattern": "from ['\"]zustand|from ['\"]redux|from ['\"]jotai|from ['\"]@reduxjs",
+      "message": "External state library detected. Rotato uses React Context + useReducer only (ADR-002). Remove this import.",
+      "severity": "error"
+    },
+    {
+      "pattern": "#[Ff][Ff]|#[Ee][Ee]0|#[Dd][Cc]|color.*red|bg.*red|text.*red",
+      "message": "Red-family color detected. Rotato's design system prohibits red colors — they signal urgency, which conflicts with the anti-urgency design principle. Use terracotta or amber instead.",
+      "severity": "warning"
+    }
+  ]
+}

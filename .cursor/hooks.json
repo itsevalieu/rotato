@@ -1,0 +1,18 @@
+{
+  "hooks": [
+    {
+      "name": "pre-commit-lint",
+      "trigger": "pre-commit",
+      "command": "npx eslint --max-warnings=0 $(git diff --cached --name-only --diff-filter=ACM | grep -E '\\.(ts|tsx)$' | tr '\\n' ' ')",
+      "onFailure": "abort",
+      "description": "ESLint on staged TypeScript files. Aborts commit on any warning or error."
+    },
+    {
+      "name": "pre-commit-typecheck",
+      "trigger": "pre-commit",
+      "command": "npx tsc --noEmit",
+      "onFailure": "abort",
+      "description": "TypeScript type-check. Aborts commit on type errors."
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+---
+description: Rotato architectural constraints derived from ADRs. Enforces state management, persistence, and hydration patterns on all source files.
+globs: src/**/*.ts, src/**/*.tsx
+alwaysApply: true
+---
+
+# Architecture Rules
+
+## State management (ADR-002)
+- Use React Context + useReducer **only**. No Zustand, Redux, Jotai, or other state libraries.
+- All mutations go through `GardenAction` union types in `src/lib/types.ts`
+- Local `useState` is fine for ephemeral form state (cleared on submit)
+
+## Persistence (ADR-003)
+- All persistence via `idb-keyval` through `src/lib/storage.ts`. **No direct `localStorage` calls.**
+- Exception: the onboarding-seen flag uses `localStorage` via `ONBOARDING_KEY` constant only
+
+```ts
+// ❌ BAD
+localStorage.setItem('rotato-garden-state', JSON.stringify(state))
+
+// ✅ GOOD
+import { saveState } from '@/lib/storage'
+await saveState(state)
+```
+
+## Hydration guards (ADR-006)
+- `Date.now()`, `new Date()`, or `toLocaleString()` in JSX → add `suppressHydrationWarning` to the containing element
+- dnd-kit draggable components → require a client-side mounting guard:
+  ```tsx
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => setMounted(true), [])
+  if (!mounted) return <StaticFallback />
+  ```
+- Components reading GardenState → check `state.hydrated` before rendering persisted values
+
+## Use constants, not magic strings
+- Section metadata: `SECTION_META` from `src/lib/constants.ts`
+- Section order: `SECTION_ORDER`
+- Color palette: `PALETTE_COLORS`
+- Icon options: `ICON_OPTIONS`
+- Storage key: `STORAGE_KEY` — never use the literal string `"rotato-garden-state"`
+
+## File placement
+- UI primitives → `src/components/ui/`
+- Garden features → `src/components/garden/`
+- Form styles → `src/components/garden/form-styles/`
+- Custom hooks → `src/hooks/`
+- All new types → `src/lib/types.ts`, not inline
