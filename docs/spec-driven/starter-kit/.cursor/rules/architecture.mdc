@@ -1,0 +1,42 @@
+---
+description: >
+  [PROJECT_NAME] architectural constraints. Generated at Stage 4 from ADRs.
+  One rule per ADR. Enforces state management, persistence, and hydration patterns.
+  Fill in the [PLACEHOLDER] sections after completing Stage 4 (Architecture).
+globs: src/**/*.ts, src/**/*.tsx
+alwaysApply: true
+---
+
+# Architecture Rules
+
+## State management (ADR-00X)
+- Use [YOUR CHOSEN APPROACH] only. Do not introduce [PROHIBITED ALTERNATIVES].
+- All mutations go through [TYPED ACTION SYSTEM — e.g. typed reducer actions].
+- No direct state mutation.
+
+## Persistence (ADR-00X)
+- Use [YOUR STORAGE ABSTRACTION — e.g. src/lib/storage.ts] for all persistence.
+- Do not call [STORAGE API — e.g. localStorage] directly anywhere else in the codebase.
+- Persistence is async — components must handle loading state before reading persisted data.
+
+## Hydration (ADR-00X — if using SSR)
+- Do not render values that differ between server and client without a guard:
+  - Dynamic values (e.g. `Date.now()`, `toLocaleString()`): use `suppressHydrationWarning`
+  - Client-only libraries: use a mounting guard (`useState(false)` + `useEffect(() => setMounted(true), [])`)
+  - Persisted state: check `state.hydrated` before rendering data that depends on stored values
+
+## Constants
+- All static data (labels, options, keys, identifiers) must live in `src/lib/constants.ts`.
+- Never hardcode strings, numbers, or arrays that appear in more than one place.
+
+## File placement
+- Types: `src/lib/types.ts`
+- Constants: `src/lib/constants.ts`
+- Persistence: `src/lib/storage.ts`
+- Global state: `src/context/[AppContext].tsx`
+- Custom hooks: `src/hooks/`
+- UI primitives: `src/components/ui/`
+- Feature components: `src/components/[feature]/`
+
+## [ADD ONE SECTION PER ADR]
+- [Rule derived from ADR-00X]

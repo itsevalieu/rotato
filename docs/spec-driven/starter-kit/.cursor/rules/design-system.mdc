@@ -1,0 +1,38 @@
+---
+description: >
+  [PROJECT_NAME] design system constraints. Generated at Stage 4 from the design spec.
+  Enforces color tokens, typography, animation limits, and accessibility on all component and style files.
+  Fill in the [PLACEHOLDER] sections after completing Stage 3 (Design Spec).
+globs: **/*.tsx, **/*.css
+alwaysApply: true
+---
+
+# Design System
+
+## Colors
+- Use ONLY CSS custom properties defined in your globals/tokens file. Never hardcode hex values.
+- Prohibited color ranges: [LIST RANGES FROM DESIGN SPEC — e.g. "No red-family colors (#FF..., #E5..., #DC... ranges)"]
+- Reason: [STATE WHY — e.g. "Avoid urgency cues in a calm productivity tool"]
+- Palette tokens to use: [LIST YOUR TOKEN NAMES — e.g. --color-primary, --color-surface]
+
+## Typography
+- Heading font: [FONT NAME] — only for [heading roles]
+- Body font: [FONT NAME] — for all body text
+- Accent font: [FONT NAME or "none"] — only for [accent use cases]
+- Do not introduce new font families without updating this rule
+
+## Animation
+- Maximum transition duration: [N]ms for micro-interactions, [N]ms for layout transitions
+- Easing: [CURVE] for entrances, [CURVE] for exits
+- Always provide a `prefers-reduced-motion` alternative:
+  ```css
+  @media (prefers-reduced-motion: reduce) {
+    /* disable or simplify transitions */
+  }
+  ```
+
+## Accessibility
+- Every interactive element must have an accessible label (`aria-label` or associated `<label>`)
+- Focus ring must be visible on keyboard navigation — do not suppress `:focus-visible` outlines
+- Minimum touch target size: 44×44px for mobile targets
+- Color contrast: minimum 4.5:1 for normal text, 3:1 for large text

@@ -1,0 +1,30 @@
+---
+description: >
+  [PROJECT_NAME] testing standards. Naming conventions, coverage requirements,
+  and testing patterns for all test files.
+globs: **/*.test.ts, **/*.test.tsx, **/*.spec.ts, **/*.spec.tsx
+alwaysApply: false
+---
+
+# Testing Standards
+
+## Naming
+- `describe` block: the component or function name
+- `it` / `test` block: `"should [behavior] when [condition]"`
+- Test file: co-located with the component, same name + `.test.tsx`
+
+## Coverage requirements
+- All public functions in `src/lib/` must have unit tests
+- All reducer actions must have tests for the happy path and the error/empty case
+- UI components: test behavior (interactions, state changes), not implementation details
+
+## Tools
+- Unit tests: [YOUR TEST RUNNER — e.g. Vitest or Jest]
+- Component tests: [YOUR COMPONENT TESTING APPROACH — e.g. React Testing Library]
+- Do not use `describe.only` or `it.only` in committed code
+- Do not mock modules unless the real module is impractical (e.g. network, native APIs)
+
+## Assertions
+- Prefer user-visible assertions: `getByRole`, `getByText`, `getByLabelText`
+- Avoid: `getByTestId` unless no semantic alternative exists
+- Avoid: snapshot tests for logic — prefer explicit assertions
