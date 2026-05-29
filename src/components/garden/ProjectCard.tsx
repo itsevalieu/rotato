@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { GripVertical, MoreHorizontal, ArrowRight, Archive, Trash2, ChevronDown, BookOpen, Target, CheckSquare } from "lucide-react";
 import type { Project, SectionId } from "@/lib/types";
 import { SECTION_META, SECTION_ORDER, SECTION_COLORS } from "@/lib/constants";
-import { timeAgo, getDormancyStatus } from "@/lib/utils";
+import { tendedWhisper, getDormancyStatus } from "@/lib/utils";
 import { getIcon } from "@/components/ui/IconPicker";
 import Badge from "@/components/ui/Badge";
 import Card from "@/components/ui/Card";
@@ -101,6 +101,7 @@ export default function ProjectCard({
           <button
             className="mt-1 text-warm-gray hover:text-soft-brown cursor-grab active:cursor-grabbing shrink-0"
             aria-label="Drag to reorder"
+            suppressHydrationWarning
             {...dragHandleProps}
           >
             <GripVertical size={16} />
@@ -153,8 +154,8 @@ export default function ProjectCard({
             </div>
 
             <div className="flex items-center gap-3 flex-wrap">
-              <p className="text-xs text-warm-gray">
-                Touched {timeAgo(project.lastTouchedAt)}
+              <p className="text-[11px] text-warm-gray/70 italic">
+                {tendedWhisper(project.lastTouchedAt, project.section)}
               </p>
               {dormancy && (
                 <span

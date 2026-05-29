@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Plus } from "lucide-react";
 import { GardenProvider, useGarden } from "@/context/GardenContext";
+import { ToastProvider } from "@/context/ToastContext";
 import Header from "@/components/layout/Header";
 import AmbientBackground from "@/components/layout/AmbientBackground";
 import GardenBoard from "@/components/garden/GardenBoard";
@@ -12,6 +13,11 @@ import ArchivedSection from "@/components/garden/ArchivedSection";
 import FocusBanner from "@/components/garden/FocusBanner";
 import ActivityHeatmap from "@/components/garden/ActivityHeatmap";
 import Button from "@/components/ui/Button";
+import OnboardingModal from "@/components/garden/OnboardingModal";
+import DemoBanner from "@/components/garden/DemoBanner";
+import WeeklyReflection from "@/components/garden/WeeklyReflection";
+import MoodCheck from "@/components/garden/MoodCheck";
+import ProjectBirthday from "@/components/garden/ProjectBirthday";
 
 const WIDE_MODES = new Set(["kanban", "three-panel"]);
 const FULL_MODES = new Set(["quadrant", "deck", "river", "three-panel"]);
@@ -54,6 +60,7 @@ function GardenContent() {
           </div>
         </div>
 
+        <DemoBanner />
         {!isFullBleed && <FocusBanner />}
         <GardenBoard searchQuery={searchQuery} tagFilter={tagFilter} />
         {!isFullBleed && <ArchivedSection />}
@@ -65,6 +72,10 @@ function GardenContent() {
         onClose={() => setCreateOpen(false)}
         defaultSection="currently-playing"
       />
+      <OnboardingModal />
+      <WeeklyReflection />
+      <MoodCheck />
+      <ProjectBirthday />
     </>
   );
 }
@@ -72,7 +83,9 @@ function GardenContent() {
 export default function GardenPage() {
   return (
     <GardenProvider>
-      <GardenContent />
+      <ToastProvider>
+        <GardenContent />
+      </ToastProvider>
     </GardenProvider>
   );
 }

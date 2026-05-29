@@ -5,6 +5,24 @@ export function timeAgo(dateStr: string): string {
   return formatDistanceToNow(new Date(dateStr), { addSuffix: true });
 }
 
+/** Gentle, poetic relative time for the "last tended" whisper on cards. */
+export function tendedWhisper(dateStr: string, section?: string): string {
+  const days = Math.floor(
+    (Date.now() - new Date(dateStr).getTime()) / 86400000
+  );
+  if (days === 0) return "tended today";
+  if (days === 1) return "tended yesterday";
+  if (days < 7) return `tended ${days} days ago`;
+  if (days < 14) return section === "resting" ? "resting a week" : "tended a week ago";
+  if (days < 30) {
+    const weeks = Math.floor(days / 7);
+    return section === "resting" ? `resting ${weeks} weeks` : `tended ${weeks} weeks ago`;
+  }
+  if (days < 60) return section === "resting" ? "resting a month" : "tended a month ago";
+  const months = Math.floor(days / 30);
+  return section === "resting" ? `resting ${months} months` : `tended ${months} months ago`;
+}
+
 export function randomPick<T>(arr: T[]): T | undefined {
   if (arr.length === 0) return undefined;
   return arr[Math.floor(Math.random() * arr.length)];

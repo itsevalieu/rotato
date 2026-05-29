@@ -8,6 +8,7 @@ import Button from "@/components/ui/Button";
 import ColorPicker from "@/components/ui/ColorPicker";
 import IconPicker from "@/components/ui/IconPicker";
 import { useGarden } from "@/context/GardenContext";
+import { useToast } from "@/context/ToastContext";
 import type { Project, SectionId } from "@/lib/types";
 import { SECTION_META, SECTION_ORDER } from "@/lib/constants";
 
@@ -25,6 +26,7 @@ export default function ProjectForm({
   defaultSection = "currently-playing",
 }: ProjectFormProps) {
   const { dispatch, createProject } = useGarden();
+  const { showToast } = useToast();
   const isEditing = !!project;
 
   const [title, setTitle] = useState("");
@@ -68,6 +70,8 @@ export default function ProjectForm({
       .filter(Boolean);
 
     if (isEditing && project) {
+      const newStep = nextTinyStep.trim() || undefined;
+      const stepChanged = newStep && newStep !== project.nextTinyStep;
       dispatch({
         type: "UPDATE_PROJECT",
         project: {
@@ -76,12 +80,13 @@ export default function ProjectForm({
           description: description.trim(),
           inspirationText: inspirationText.trim() || undefined,
           tags: parsedTags,
-          nextTinyStep: nextTinyStep.trim() || undefined,
+          nextTinyStep: newStep,
           color,
           icon,
           section,
         },
       });
+      if (stepChanged) showToast("Next tiny step set — you've got this 🌱", "✓");
     } else {
       createProject({
         title: title.trim(),

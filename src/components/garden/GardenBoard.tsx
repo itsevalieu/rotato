@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
+import { useConfetti } from "@/hooks/useConfetti";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   DndContext,
@@ -190,6 +191,7 @@ export default function GardenBoard({
   tagFilter,
 }: GardenBoardProps) {
   const { state, dispatch, createProject } = useGarden();
+  const { celebrate } = useConfetti();
   const [editingProject, setEditingProject] = useState<Project | null>(null);
   const [formOpen, setFormOpen] = useState(false);
   const [formSection, setFormSection] = useState<SectionId>("currently-playing");
@@ -228,6 +230,7 @@ export default function GardenBoard({
             id: projectId,
             to: overId as SectionId,
           });
+          if (overId === "finished-worlds") celebrate();
         }
         return;
       }
@@ -242,6 +245,7 @@ export default function GardenBoard({
             id: projectId,
             to: overProject.section,
           });
+          if (overProject.section === "finished-worlds") celebrate();
         } else {
           const sectionProjects = state.projects.filter(
             (p) => p.section === project.section
@@ -260,7 +264,7 @@ export default function GardenBoard({
         }
       }
     },
-    [state.projects, dispatch]
+    [state.projects, dispatch, celebrate]
   );
 
   const handleEdit = useCallback((project: Project) => {
@@ -271,8 +275,9 @@ export default function GardenBoard({
   const handleMove = useCallback(
     (id: string, to: SectionId) => {
       dispatch({ type: "MOVE_PROJECT", id, to });
+      if (to === "finished-worlds") celebrate();
     },
-    [dispatch]
+    [dispatch, celebrate]
   );
 
   const handleArchive = useCallback(
@@ -294,6 +299,26 @@ export default function GardenBoard({
       dispatch({ type: "MOVE_PROJECT", id, to: "currently-playing" });
     },
     [dispatch]
+  );
+
+  const handleGrowWithToast = useCallback(
+    (id: string) => {
+      handleGrow(id);
+      const project = state.projects.find((p) => p.id === id);
+      if (project) {
+        // tiny confetti burst for sprouting
+        import("canvas-confetti").then(({ default: confetti }) => {
+          confetti({
+            particleCount: 30,
+            spread: 50,
+            origin: { y: 0.7 },
+            colors: ["#8B9E82", "#7FA86A", "#90BE78", "#A0C88A", "#C4956A"],
+            scalar: 0.75,
+          });
+        });
+      }
+    },
+    [handleGrow, state.projects]
   );
 
   const handleCloseForm = useCallback(() => {
@@ -420,7 +445,7 @@ export default function GardenBoard({
                         onMove={handleMove}
                         onArchive={handleArchive}
                         onDelete={handleDelete}
-                        onGrow={handleGrow}
+                        onGrow={handleGrowWithToast}
                       />
                     ))}
                   </AnimatePresence>

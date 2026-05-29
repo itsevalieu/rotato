@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { GripVertical, Sprout, ArrowUp, Trash2 } from "lucide-react";
 import type { Project } from "@/lib/types";
 import Badge from "@/components/ui/Badge";
+import { tendedWhisper } from "@/lib/utils";
 
 interface SeedCardProps {
   project: Project;
@@ -39,6 +40,7 @@ export default function SeedCard({
           <button
             className="text-warm-gray hover:text-soft-brown cursor-grab active:cursor-grabbing shrink-0"
             aria-label="Drag to reorder"
+            suppressHydrationWarning
             {...dragHandleProps}
           >
             <GripVertical size={14} />
@@ -76,6 +78,9 @@ export default function SeedCard({
                 ))}
               </div>
             )}
+            <p className="text-[10px] text-warm-gray/60 italic mt-1 pl-5">
+              {tendedWhisper(project.lastTouchedAt, "seeds")}
+            </p>
           </div>
 
           <div className="flex items-center gap-1 shrink-0">
